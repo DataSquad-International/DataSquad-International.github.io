@@ -2,19 +2,13 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project status
+## Stack
 
-Pre-initialization. The Astro project has not been scaffolded yet. This repo will become the DataSquad International website — a multi-institution network site extending the UCLA DataSquad model to peer institutions.
+- **Framework:** Astro v6 (static output)
+- **Hosting:** GitHub Pages via `.github/workflows/deploy.yml`
+- **Domain:** datasquad.info (CNAME in `public/`)
 
-Planning doc: `~/projects/datasquad-international/datasquad-international-website-plan.md`
-
-## Tech stack
-
-- **Framework:** Astro (static output, no backend)
-- **Content:** Markdown pages + YAML/JSON content collections for institutions and projects
-- **Hosting:** GitHub Pages or Netlify (TBD — check where OSPO Education and IMLS Open Science sites are hosted)
-
-## Commands (once Astro is initialized)
+## Commands
 
 ```bash
 npm run dev        # local dev server at localhost:4321
@@ -22,30 +16,35 @@ npm run build      # production build to dist/
 npm run preview    # preview built output
 ```
 
-## Planned site architecture
+## Content collections (Astro v6)
+
+Config is at `src/content.config.ts` (not `src/content/config.ts` — Astro v6 moved it).
+Collections use the `glob()` loader. YAML files live in:
+
+- `src/content/institutions/` — member institutions; fields include `ror_id`
+- `src/content/projects/` — cross-institution project outputs
+- `src/content/people/` — leads and contributors; fields include `orcid`
+
+## Site architecture
 
 ```
-/                  Home — headline, model summary, 3-panel goal overview
-/about             Origin story, UCLA roots, co-leads
-/model             How the program works — staffing, services, student outcomes
-/institutions      Member directory (driven by YAML content collection)
-/join              How to adopt the model — onboarding guide, templates, FAQ
-/projects          Cross-institution project showcase (driven by YAML content collection)
-/resources         Templates, decks, assessment tools
-/contact           Contact info or form
+/              Home
+/about         Origin story, founder + leads
+/model         How the program works
+/institutions  Member directory (from institutions collection)
+/join          How to adopt the model
+/projects      Project showcase (from projects collection)
+/resources     Templates, decks, tools
+/contact       Contact
 ```
 
-Phase 2 additions: `/events`, `/blog` (or `/news`).
-
-## Content model
-
-Institution and project data should live in `src/content/` as YAML-fronted Markdown or standalone YAML, using Astro content collections. This keeps non-developer collaborators (Paula Lackie, Deborah Wiltshire) able to update data without touching components.
+Phase 2: `/events`, `/blog`
 
 ## Key context
 
-- Co-led by Tim Dennis (UCLA) and Paula Lackie (Carleton College)
-- GitHub org: https://github.com/DataSquad-International
-- Reference sites (same Astro stack): OSPO Education, IMLS Open Science
-- Sibling `docs/` folder in the parent directory (`../docs/`) is a Jekyll Just the Docs placeholder — separate from this Astro site
-- Domain not yet decided: `datasquad.info` or a UCLA subdomain
-- Brand/visual identity not yet decided: UCLA brand vs. distinct DataSquad International look
+- **Founder:** Paula Lackie (Carleton) @plackie
+- **UCLA leads:** Tim Dennis @jt14den, Leigh Phan
+- **Content:** Deborah Wiltshire (GESIS, Cologne) @DeborahWiltshire
+- **Builders:** Gianna @giaari15, Shawn Wang @ShouzhiWang
+- Planning doc: `~/projects/datasquad-international/datasquad-international-website-plan.md`
+- Reference Astro site: `~/websites/OSPO_WEBSITE`
