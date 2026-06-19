@@ -1,0 +1,99 @@
+name: Start a DataSquad at your institution
+description: For institutions interested in adopting the DataSquad model. Tell us about your program and we'll be in touch.
+title: "[Institution]: "
+labels: ["interest", "institution"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your interest in bringing DataSquad to your institution! Fill this in and a network lead will follow up.
+
+        Prefer to reach out privately, or don't have a GitHub account? See the email option on the template chooser instead.
+  - type: input
+    id: name
+    attributes:
+      label: Your name
+    validations:
+      required: true
+  - type: input
+    id: role
+    attributes:
+      label: Your role / title
+      placeholder: e.g. Data Services Librarian, Department Chair
+    validations:
+      required: true
+  - type: input
+    id: institution
+    attributes:
+      label: Institution
+    validations:
+      required: true
+  - type: input
+    id: email
+    attributes:
+      label: Email
+      description: How we'll reach you. This issue is public — leave blank if you'd rather we contact you another way.
+    validations:
+      required: false
+  - type: dropdown
+    id: region
+    attributes:
+      label: Country / region
+      options:
+        - United States
+        - Europe
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Where are you in the process?
+      options:
+        - Just exploring the idea
+        - Actively planning a program
+        - Already running something similar
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Tell us about your context
+      description: Which library or department would run it? Who's involved? Any existing data-services work?
+    validations:
+      required: false
+  - type: textarea
+    id: motivation
+    attributes:
+      label: What draws you to the DataSquad model?
+      description: What are you hoping it does for your students and researchers?
+    validations:
+      required: false
+  - type: checkboxes
+    id: needs
+    attributes:
+      label: What would be most useful from us?
+      options:
+        - label: A call to talk it through
+        - label: Resources & templates to get started
+        - label: To be connected with a similar institution
+        - label: Just keeping us on your radar for now
+  - type: input
+    id: heard
+    attributes:
+      label: How did you hear about DataSquad International?
+    validations:
+      required: false
+  - type: textarea
+    id: anything
+    attributes:
+      label: Anything else or questions?
+    validations:
+      required: false
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: Listing
+      options:
+        - label: It's OK to mention our institution as interested in network updates

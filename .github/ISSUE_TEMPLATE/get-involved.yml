@@ -1,0 +1,67 @@
+name: Get involved (student or staff)
+description: For students and staff who want to join a DataSquad, help start one, or just learn more.
+title: "[Get involved]: "
+labels: ["interest", "individual"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Want to get involved with DataSquad? Great.
+
+        **Already have a DataSquad on your campus?** The fastest path is to contact your local program directly — see the institutions directory at https://datasquad.info/institutions. Use this form if there isn't one yet, or if you want to reach the wider network.
+  - type: input
+    id: name
+    attributes:
+      label: Your name
+    validations:
+      required: true
+  - type: input
+    id: institution
+    attributes:
+      label: Your institution
+    validations:
+      required: true
+  - type: input
+    id: email
+    attributes:
+      label: Email
+      description: This issue is public — leave blank if you'd rather not post it here.
+    validations:
+      required: false
+  - type: dropdown
+    id: role
+    attributes:
+      label: You are a…
+      options:
+        - Undergraduate student
+        - Graduate student
+        - Staff
+        - Faculty
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: existing
+    attributes:
+      label: Is there already a DataSquad at your institution?
+      options:
+        - "No"
+        - "Yes"
+        - Not sure
+    validations:
+      required: true
+  - type: checkboxes
+    id: interest
+    attributes:
+      label: What are you interested in?
+      options:
+        - label: Joining as a student data analyst
+        - label: Helping start a DataSquad at my institution
+        - label: Using DataSquad services for my research
+        - label: Just learning more
+  - type: textarea
+    id: message
+    attributes:
+      label: Anything you'd like to add?
+    validations:
+      required: false
