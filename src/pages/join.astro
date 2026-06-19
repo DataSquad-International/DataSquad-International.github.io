@@ -1,0 +1,151 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const ISSUE_CHOOSER =
+  'https://github.com/DataSquad-International/DataSquad-International.github.io/issues/new/choose';
+
+const steps = [
+  {
+    n: 1,
+    title: 'Tell us you’re interested',
+    body: 'Open an interest issue (or email us). Where you are in the process is fine — just exploring counts.',
+  },
+  {
+    n: 2,
+    title: 'Talk it through',
+    body: 'A network lead meets with you to understand your campus, talk about fit, and answer questions.',
+  },
+  {
+    n: 3,
+    title: 'Get the starter kit',
+    body: 'Role descriptions, a service-scope policy you can adapt, onboarding patterns, and a shared reading list.',
+  },
+  {
+    n: 4,
+    title: 'Stand up your local setup',
+    body: 'Choose your own tools for scheduling, request tracking, and funding. We share what we use; you decide what fits.',
+  },
+  {
+    n: 5,
+    title: 'Join the community',
+    body: 'Plug into the network’s GitHub Discussions and Projects, and the announcements list, to learn from other squads.',
+  },
+  {
+    n: 6,
+    title: 'Launch, then share back',
+    body: 'Run your first consultations, and let your wins feed the blog and help the next institution adopt.',
+  },
+];
+---
+
+<Layout
+  title="Adopt the model — DataSquad International"
+  description="How to bring the DataSquad model to your institution: the adoption path, the starter kit, and how the network coordinates."
+>
+  <section class="hero">
+    <div class="inner">
+      <p class="eyebrow">For institutions</p>
+      <h1>Bring DataSquad to your institution</h1>
+      <p class="lede">
+        Starting a DataSquad means adopting a proven model and joining a network
+        of peers, not buying a system. Here's the path from "interested" to
+        "running."
+      </p>
+      <a class="btn btn-primary" href={ISSUE_CHOOSER} target="_blank" rel="noopener">
+        Express interest →
+      </a>
+    </div>
+  </section>
+
+  <section class="section">
+    <ol class="steps">
+      {steps.map((s) => (
+        <li class="step">
+          <span class="num" aria-hidden="true">{s.n}</span>
+          <div>
+            <h2>{s.title}</h2>
+            <p>{s.body}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="section panels">
+    <div class="panel">
+      <h2>The starter kit</h2>
+      <p>
+        A concrete checklist of what you need to launch: the roles to fill, a
+        service-scope policy to adapt, the local decisions to make, and a shared
+        reading list for new analysts.
+      </p>
+      <a href="/join/starter-kit">See the starter kit →</a>
+    </div>
+    <div class="panel">
+      <h2>How the network coordinates</h2>
+      <p>
+        We run on tools the leads already use. <strong>GitHub Projects</strong>
+        tracks shared work and <strong>GitHub Discussions</strong> is where squads
+        ask questions, share projects, and propose ideas — searchable and open, so
+        new adopters can read the back-catalog. A low-volume announcements list
+        covers anyone who'd rather not check GitHub.
+      </p>
+      <a href={ISSUE_CHOOSER} target="_blank" rel="noopener">Start a conversation →</a>
+    </div>
+  </section>
+
+  <section class="section who">
+    <h2>Not an institution?</h2>
+    <ul>
+      <li><strong>Students</strong> — if your campus has a DataSquad, contact your local program. If it doesn't, the interest form has a "get involved" option.</li>
+      <li><strong>Researchers</strong> — find a squad near you in the <a href="/institutions">institutions directory</a> and request help there.</li>
+    </ul>
+  </section>
+</Layout>
+
+<style>
+  .hero { background: var(--color-navy); color: var(--color-white); }
+  .hero .inner { max-width: var(--max-width); margin: 0 auto; padding: var(--space-16) var(--space-6); }
+  .eyebrow {
+    margin: 0 0 var(--space-3); font-size: var(--text-xs); letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--color-orange); font-weight: 700;
+  }
+  .hero h1 { margin: 0 0 var(--space-4); color: var(--color-white); font-size: var(--text-4xl); max-width: 20ch; }
+  .lede { margin: 0 0 var(--space-8); font-size: var(--text-lg); color: #cdd6e3; max-width: 58ch; }
+  .btn { display: inline-block; text-decoration: none; font-weight: 700; border-radius: 6px; padding: var(--space-3) var(--space-6); }
+  .btn-primary { background: var(--color-orange); color: var(--color-slate); }
+  .btn-primary:hover { background: #ffbe3d; }
+
+  .section { max-width: var(--max-width); margin: 0 auto; padding: var(--space-12) var(--space-6); }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-6); max-width: 760px; }
+  .step { display: flex; gap: var(--space-4); align-items: flex-start; }
+  .num {
+    flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--color-navy); color: var(--color-orange);
+    display: flex; align-items: center; justify-content: center; font-weight: 700;
+  }
+  .step h2 { margin: 0 0 var(--space-1); font-size: var(--text-xl); }
+  .step p { margin: 0; color: #555; }
+
+  .panels { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
+  .panel {
+    background: var(--color-white); border: 1px solid #e3e6ea;
+    border-top: 3px solid var(--color-steel); border-radius: 0 0 8px 8px; padding: var(--space-8);
+  }
+  .panel h2 { margin: 0 0 var(--space-3); font-size: var(--text-xl); }
+  .panel p { margin: 0 0 var(--space-4); color: #555; font-size: var(--text-sm); line-height: 1.6; }
+  .panel a { font-weight: 700; text-decoration: none; color: var(--color-navy); }
+  .panel a:hover { color: var(--color-steel); }
+
+  .who { background: var(--color-white); max-width: none; }
+  .who > * { max-width: var(--max-width); margin-left: auto; margin-right: auto; }
+  .who h2 { font-size: var(--text-2xl); margin: 0 0 var(--space-4); }
+  .who ul { margin: 0; padding-left: var(--space-6); display: grid; gap: var(--space-3); max-width: 70ch; }
+  .who a { color: var(--color-steel); }
+
+  @media (max-width: 720px) {
+    .hero h1 { font-size: var(--text-3xl); }
+    .panels { grid-template-columns: 1fr; }
+  }
+</style>

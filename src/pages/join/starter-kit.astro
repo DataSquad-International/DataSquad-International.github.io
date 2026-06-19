@@ -1,0 +1,158 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const sections = [
+  {
+    title: 'People & roles',
+    blurb: 'You can start small — even one supervisor and a couple of analysts.',
+    items: [
+      'A program lead or supervisor (library or department staff) to sustain the squad',
+      'A student project manager to triage requests and keep work moving',
+      'One or more student data analysts — the people doing the hands-on work',
+      'Optional: a technical writer to document projects and write guides',
+      'Funding for student wages (this is yours to secure — see local operations)',
+    ],
+  },
+  {
+    title: 'Service scope & policies',
+    blurb: 'Adapt these from the shared templates; keep the guardrails.',
+    items: [
+      'A short statement of what your squad does and does not do (research support, not the research)',
+      'A confidentiality agreement every student signs before client work',
+      'A code of conduct for the team',
+      'Optional: a cap on consultations per researcher per term, if demand needs managing',
+    ],
+  },
+  {
+    title: 'Local operations — your choice of tools',
+    blurb: 'The network does not prescribe these. Examples show what UCLA uses; pick what your institution already has.',
+    items: [
+      'Researcher intake & scheduling — UCLA uses LibCal + an intake form',
+      'Request & project tracking — GitHub Projects is the shared network default (New/Triage → In Progress → Done)',
+      'Internal team communication — UCLA uses Slack; the network coordinates over GitHub Discussions',
+      'Document storage — UCLA uses Google Drive for notes and deliverables',
+      'Assessment — UCLA uses LibInsight; track consultations so you can show impact',
+      'Funding, payroll & hiring — wholly institutional (job descriptions, HR, a funding source)',
+    ],
+  },
+  {
+    title: 'Onboarding pattern',
+    blurb: 'How UCLA brings a new analyst on in their first week — portable to your setup.',
+    items: [
+      'An onboarding ticket each student opens to track their own setup',
+      'Accounts & access (version control org, shared drives, communication channels)',
+      'The signed confidentiality form before any client work',
+      'A reading list (below) started in week one, continued through the first month',
+      'A kickoff meeting with supervisors to set hours and consultation preferences',
+    ],
+  },
+  {
+    title: 'Join the network',
+    blurb: 'The part that makes you a chapter, not an island.',
+    items: [
+      'Express interest so we know you’re building',
+      'Get added to the network’s GitHub Discussions and Projects',
+      'Subscribe to the announcements list',
+      'Share your launch and early wins back to the community',
+    ],
+  },
+];
+
+const readingList = [
+  'Pedagogical Data Reference Interview',
+  'The Practice of Reproducible Research (front matter + a case study)',
+  'Good Enough Practices in Scientific Computing',
+  'Introduction to Data Literacy',
+  'Data Curation Network primers',
+  'A role-specific job handbook for each student',
+];
+---
+
+<Layout
+  title="Adoption starter kit — DataSquad International"
+  description="A concrete checklist of what an institution needs to launch a DataSquad: roles, policies, local operations, onboarding, and joining the network."
+>
+  <section class="hero">
+    <div class="inner">
+      <p class="eyebrow">For institutions</p>
+      <h1>Adoption starter kit</h1>
+      <p class="lede">
+        What you actually need to launch a DataSquad. The shared pieces come with
+        templates; the local pieces are yours to decide. Treat this as a checklist.
+      </p>
+      <p class="back"><a href="/join">← Back to adoption path</a></p>
+    </div>
+  </section>
+
+  {sections.map((sec, i) => (
+    <section class="section">
+      <header class="sec-head">
+        <span class="sec-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <div>
+          <h2>{sec.title}</h2>
+          <p>{sec.blurb}</p>
+        </div>
+      </header>
+      <ul class="checklist">
+        {sec.items.map((item) => (
+          <li><span class="tick" aria-hidden="true">✓</span><span set:html={item} /></li>
+        ))}
+      </ul>
+    </section>
+  ))}
+
+  <section class="section reading">
+    <h2>Shared reading list</h2>
+    <p class="sec-lede">
+      A common foundation for new analysts across the network. Start here.
+    </p>
+    <ul class="checklist">
+      {readingList.map((r) => (
+        <li><span class="tick" aria-hidden="true">✓</span><span>{r}</span></li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section cta">
+    <h2>Ready to start?</h2>
+    <a class="btn" href="https://github.com/DataSquad-International/DataSquad-International.github.io/issues/new/choose" target="_blank" rel="noopener">Express interest →</a>
+  </section>
+</Layout>
+
+<style>
+  .hero { background: var(--color-navy); color: var(--color-white); }
+  .hero .inner { max-width: var(--max-width); margin: 0 auto; padding: var(--space-12) var(--space-6); }
+  .eyebrow {
+    margin: 0 0 var(--space-2); font-size: var(--text-xs); letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--color-orange); font-weight: 700;
+  }
+  .hero h1 { margin: 0 0 var(--space-3); color: var(--color-white); font-size: var(--text-4xl); }
+  .lede { margin: 0 0 var(--space-4); font-size: var(--text-lg); color: #cdd6e3; max-width: 60ch; }
+  .back { margin: 0; font-size: var(--text-sm); }
+  .back a { color: var(--color-orange); text-decoration: none; }
+
+  .section { max-width: 820px; margin: 0 auto; padding: var(--space-12) var(--space-6) 0; }
+  .section:last-of-type { padding-bottom: var(--space-8); }
+  .sec-head { display: flex; gap: var(--space-4); align-items: baseline; margin-bottom: var(--space-4); }
+  .sec-num { color: var(--color-orange); font-weight: 700; font-size: var(--text-xl); }
+  .sec-head h2 { margin: 0 0 var(--space-1); font-size: var(--text-2xl); }
+  .sec-head p { margin: 0; color: var(--color-muted); }
+  .sec-lede { color: var(--color-muted); margin: 0 0 var(--space-4); }
+
+  .checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+  .checklist li { display: flex; gap: var(--space-3); align-items: flex-start; line-height: 1.5; }
+  .tick {
+    flex-shrink: 0; color: var(--color-steel); font-weight: 700;
+    margin-top: 1px;
+  }
+
+  .cta { text-align: center; }
+  .cta h2 { margin-bottom: var(--space-4); }
+  .btn {
+    display: inline-block; background: var(--color-orange); color: var(--color-slate);
+    font-weight: 700; text-decoration: none; border-radius: 6px; padding: var(--space-3) var(--space-6);
+  }
+  .btn:hover { background: #ffbe3d; }
+
+  @media (max-width: 720px) { .hero h1 { font-size: var(--text-3xl); } }
+</style>

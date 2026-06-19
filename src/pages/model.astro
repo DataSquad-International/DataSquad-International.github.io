@@ -1,0 +1,191 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const services = [
+  {
+    title: 'Data wrangling & transformation',
+    body: 'Accessing, importing, cleaning, and restructuring data from files, APIs, and cloud platforms.',
+  },
+  {
+    title: 'Data management & lifecycle',
+    body: 'Combining datasets, querying databases, and planning how data is managed, published, and preserved.',
+  },
+  {
+    title: 'Visualization & storytelling',
+    body: 'Building clear visualizations and advising on choices that match the research question and audience.',
+  },
+  {
+    title: 'Reproducibility & open science',
+    body: 'Testing whether code runs start to finish, reviewing documentation, and adopting open practices.',
+  },
+  {
+    title: 'Statistical & analytical support',
+    body: 'Helping researchers choose appropriate methods and interpret results in R, Python, Stata, or SPSS.',
+  },
+  {
+    title: 'Emerging methods',
+    body: 'Geospatial workflows, 3D and immersive data, and other new modalities as squads grow into them.',
+  },
+];
+
+const roles = [
+  { title: 'Data analysts', body: 'Undergraduates who do the hands-on data work with researchers.' },
+  { title: 'Technical writers', body: 'Students who document projects, write guides, and keep the squad legible.' },
+  { title: 'Project manager', body: 'A student lead who triages requests and keeps work moving.' },
+  { title: 'Program staff', body: 'Library or department staff who supervise, fund, and sustain the program.' },
+];
+
+const split = [
+  { item: 'What a DataSquad is and does', layer: 'shared', note: 'The definition, services, and tenets below' },
+  { item: 'Service scope & guardrails', layer: 'shared', note: 'A policy template you adapt' },
+  { item: 'Role shapes & onboarding pattern', layer: 'shared', note: 'Portable; titles are yours to set' },
+  { item: 'Network coordination & peer support', layer: 'shared', note: 'GitHub Projects + Discussions' },
+  { item: 'Researcher intake & scheduling', layer: 'local', note: 'UCLA uses LibCal; you choose' },
+  { item: 'Request & project tracking', layer: 'local', note: 'GitHub Projects is the shared default' },
+  { item: 'Funding, payroll & HR', layer: 'local', note: 'Wholly institutional' },
+];
+---
+
+<Layout
+  title="The model — DataSquad International"
+  description="How a DataSquad works: paid undergraduate analysts supporting researchers, with a shared model and local autonomy over how each program runs."
+>
+  <section class="hero">
+    <div class="inner">
+      <p class="eyebrow">How it works</p>
+      <h1>The DataSquad model</h1>
+      <p class="lede">
+        A DataSquad is a team of paid undergraduate analysts who help researchers
+        work with data. The model is deliberately portable: the network defines
+        what a DataSquad is and how squads coordinate, and each institution runs
+        the day-to-day its own way.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>What a DataSquad does</h2>
+    <p class="section-lede">
+      Squads support researchers, instructors, and staff across the full life of
+      a data project. The exact mix grows with each squad's skills.
+    </p>
+    <ul class="grid">
+      {services.map((s) => (
+        <li class="card">
+          <h3>{s.title}</h3>
+          <p>{s.body}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section tenets">
+    <h2>What a DataSquad doesn't do</h2>
+    <p class="section-lede">
+      The guardrails matter as much as the services. They protect researchers'
+      trust and keep students in a supportable role.
+    </p>
+    <ul class="tenet-list">
+      <li>We help researchers work with their data — we don't alter or reinterpret its substance, or change their research questions.</li>
+      <li>We hold consultations in confidence and stay neutral about the research itself.</li>
+      <li>It's research <em>support</em>, not the research, and not tutoring or homework help.</li>
+      <li>Students ask for help early; staff back them up. No one is left stuck alone.</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>Who's on a squad</h2>
+    <ul class="grid">
+      {roles.map((r) => (
+        <li class="card role">
+          <h3>{r.title}</h3>
+          <p>{r.body}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section split">
+    <h2>Shared model, local autonomy</h2>
+    <p class="section-lede">
+      You adopt a model and a community, not a software stack. The network
+      standardizes the minimum that makes squads interoperable and leaves the rest
+      to you, so you can launch with the tools your institution already has.
+    </p>
+    <table>
+      <thead>
+        <tr><th>Piece</th><th>Layer</th><th></th></tr>
+      </thead>
+      <tbody>
+        {split.map((row) => (
+          <tr>
+            <td>{row.item}</td>
+            <td>
+              <span class:list={['pill', row.layer]}>
+                {row.layer === 'shared' ? 'Network' : 'Your institution'}
+              </span>
+            </td>
+            <td class="note">{row.note}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section cta">
+    <h2>Think this fits your institution?</h2>
+    <p>See the adoption path and what you'll need to launch.</p>
+    <a class="btn" href="/join">How to adopt the model →</a>
+  </section>
+</Layout>
+
+<style>
+  .hero { background: var(--color-navy); color: var(--color-white); }
+  .hero .inner { max-width: var(--max-width); margin: 0 auto; padding: var(--space-16) var(--space-6); }
+  .eyebrow {
+    margin: 0 0 var(--space-3); font-size: var(--text-xs); letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--color-orange); font-weight: 700;
+  }
+  .hero h1 { margin: 0 0 var(--space-4); color: var(--color-white); font-size: var(--text-4xl); }
+  .lede { margin: 0; font-size: var(--text-lg); color: #cdd6e3; max-width: 60ch; }
+
+  .section { max-width: var(--max-width); margin: 0 auto; padding: var(--space-12) var(--space-6); }
+  .section h2 { font-size: var(--text-2xl); margin: 0 0 var(--space-2); }
+  .section-lede { margin: 0 0 var(--space-8); color: var(--color-muted); max-width: 60ch; }
+
+  .grid {
+    list-style: none; margin: 0; padding: 0; display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-6);
+  }
+  .card {
+    background: var(--color-white); border: 1px solid #e3e6ea;
+    border-top: 3px solid var(--color-steel); border-radius: 0 0 8px 8px; padding: var(--space-6);
+  }
+  .card.role { border-top-color: var(--color-orange); }
+  .card h3 { margin: 0 0 var(--space-2); font-size: var(--text-lg); }
+  .card p { margin: 0; font-size: var(--text-sm); color: #555; }
+
+  .tenets { background: var(--color-white); max-width: none; }
+  .tenets > * { max-width: var(--max-width); margin-left: auto; margin-right: auto; }
+  .tenet-list { margin: 0; padding-left: var(--space-6); display: grid; gap: var(--space-3); max-width: 70ch; }
+  .tenet-list li { line-height: 1.6; }
+
+  .split table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+  .split th, .split td { text-align: left; padding: var(--space-3); border-bottom: 1px solid #e3e6ea; vertical-align: top; }
+  .split th { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 1px; color: var(--color-muted); }
+  .pill { display: inline-block; border-radius: 12px; padding: 2px var(--space-3); font-size: var(--text-xs); font-weight: 700; }
+  .pill.shared { background: #e7eef6; color: var(--color-navy); }
+  .pill.local { background: #fff4dd; color: #8a5b00; }
+  .note { color: var(--color-muted); }
+
+  .cta { text-align: center; }
+  .cta h2 { margin-bottom: var(--space-2); }
+  .cta p { margin: 0 0 var(--space-6); color: var(--color-muted); }
+  .btn {
+    display: inline-block; background: var(--color-orange); color: var(--color-slate);
+    font-weight: 700; text-decoration: none; border-radius: 6px; padding: var(--space-3) var(--space-6);
+  }
+  .btn:hover { background: #ffbe3d; }
+
+  @media (max-width: 720px) { .hero h1 { font-size: var(--text-3xl); } }
+</style>
