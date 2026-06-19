@@ -1,20 +1,20 @@
-/* DataSquad International — Design Tokens
+/* DataSquad International, Design Tokens
    Palette: "The Global Analyst" (Gemini brand research, 2026-05-15)
-   Font: Atkinson Hyperlegible (Braille Institute) via Google Fonts —
+   Font: Atkinson Hyperlegible (Braille Institute) via Google Fonts,
    designed for low-vision readers; chosen to bake accessibility into the brand. */
 
 :root {
   /* Colors */
-  --color-navy:      #1D3557;   /* primary — academic trust */
-  --color-steel:     #457B9D;   /* secondary — mid-tone bridge */
-  --color-orange:    #F9AE1A;   /* accent — student energy, CTAs */
+  --color-navy:      #1D3557;   /* primary, academic trust */
+  --color-steel:     #457B9D;   /* secondary, mid-tone bridge */
+  --color-orange:    #F9AE1A;   /* accent, student energy, CTAs */
   --color-canvas:    #F8F9FA;   /* background neutral */
   --color-slate:     #2D2D2D;   /* logo anchor, axes, body text */
-  --color-muted:     #6B6B6B;   /* secondary text — AA on white (4.97:1) */
+  --color-muted:     #6B6B6B;   /* secondary text, AA on white (4.97:1) */
   --color-muted-dark: #A0A0A0;  /* secondary text on dark/slate backgrounds */
   --color-white:     #FFFFFF;
 
-  /* Typography — one accessible family for headings and body */
+  /* Typography, one accessible family for headings and body */
   --font-heading: 'Atkinson Hyperlegible', system-ui, sans-serif;
   --font-body:    'Atkinson Hyperlegible', system-ui, sans-serif;
 

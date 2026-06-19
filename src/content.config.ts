@@ -14,7 +14,7 @@ const institutions = defineCollection({
     // pulled in at build time and shown as excerpt + link-out cards on /blog.
     blog_feed_url: z.string().url().optional(),
     // Local-identifier accent (the institution's own brand color). Used only as
-    // a thin accent — card top-stripe, name dot, blog-card left border — never
+    // a thin accent, card top-stripe, name dot, blog-card left border, never
     // as body text. The shared navy/orange frame stays the unifying brand.
     brand_color: z
       .string()

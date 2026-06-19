@@ -43,7 +43,7 @@ a:hover {
   left: 0;
 }
 
-/* Visible keyboard focus everywhere — baked-in accessibility. */
+/* Visible keyboard focus everywhere, baked-in accessibility. */
 :focus-visible {
   outline: 3px solid var(--color-orange);
   outline-offset: 2px;

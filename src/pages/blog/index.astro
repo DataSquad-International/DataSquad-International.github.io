@@ -33,7 +33,7 @@ const fmtDate = (d: Date) =>
 ---
 
 <Layout
-  title="Blog — DataSquad International"
+  title="Blog | DataSquad International"
   description="Updates from across the DataSquad network: native posts plus highlights pulled from each member squad's own blog."
 >
   <StructuredData slot="head" schema={schema} />
@@ -56,7 +56,7 @@ const fmtDate = (d: Date) =>
   </section>
 
   <section class="list">
-    {posts.length === 0 && <p class="empty">No posts yet — check back soon.</p>}
+    {posts.length === 0 && <p class="empty">No posts yet, check back soon.</p>}
     <ul>
       {posts.map((p) => (
         <li
