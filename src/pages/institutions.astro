@@ -1,0 +1,95 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const institutions = (await getCollection('institutions'))
+  .filter((i) => i.data.active)
+  .sort((a, b) => a.data.name.localeCompare(b.data.name));
+---
+
+<Layout
+  title="Institutions — DataSquad International"
+  description="The member institutions running DataSquad programs across the US and Europe."
+>
+  <section class="hero">
+    <div class="inner">
+      <p class="eyebrow">The network</p>
+      <h1>Member institutions</h1>
+      <p class="lede">
+        Each institution runs its own DataSquad in its own way. Researchers and
+        students should contact their local program directly.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <ul class="cards">
+      {institutions.map((inst) => (
+        <li class="card" style={`--accent: ${inst.data.brand_color ?? 'var(--color-steel)'}`}>
+          <div class="card-head">
+            <span class="dot" aria-hidden="true"></span>
+            <h2>{inst.data.name}</h2>
+          </div>
+          <p class="desc">{inst.data.description}</p>
+          {inst.data.contact_name && (
+            <p class="contact">Contact: {inst.data.contact_name}</p>
+          )}
+          <div class="links">
+            {inst.data.local_program_url && (
+              <a href={inst.data.local_program_url} target="_blank" rel="noopener">
+                Local program ↗
+              </a>
+            )}
+            <a href={inst.data.url} target="_blank" rel="noopener">Institution ↗</a>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section cta">
+    <h2>Don't see your institution?</h2>
+    <p>Any institution can start a DataSquad. Here's how.</p>
+    <a class="btn" href="/join">Adopt the model →</a>
+  </section>
+</Layout>
+
+<style>
+  .hero { background: var(--color-navy); color: var(--color-white); }
+  .hero .inner { max-width: var(--max-width); margin: 0 auto; padding: var(--space-16) var(--space-6); }
+  .eyebrow {
+    margin: 0 0 var(--space-3); font-size: var(--text-xs); letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--color-orange); font-weight: 700;
+  }
+  .hero h1 { margin: 0 0 var(--space-4); color: var(--color-white); font-size: var(--text-4xl); }
+  .lede { margin: 0; font-size: var(--text-lg); color: #cdd6e3; max-width: 60ch; }
+
+  .section { max-width: var(--max-width); margin: 0 auto; padding: var(--space-12) var(--space-6); }
+  .cards {
+    list-style: none; margin: 0; padding: 0; display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6);
+  }
+  .card {
+    background: var(--color-white); border: 1px solid #e3e6ea;
+    border-top: 4px solid var(--accent); border-radius: 0 0 8px 8px; padding: var(--space-6);
+  }
+  .card-head { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+  .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  .card h2 { margin: 0; font-size: var(--text-xl); }
+  .desc { margin: 0 0 var(--space-4); color: #555; font-size: var(--text-sm); line-height: 1.6; }
+  .contact { margin: 0 0 var(--space-4); color: var(--color-muted); font-size: var(--text-sm); }
+  .links { display: flex; gap: var(--space-4); }
+  .links a { font-weight: 700; text-decoration: none; color: var(--color-navy); font-size: var(--text-sm); }
+  .links a:hover { color: var(--color-steel); }
+
+  .cta { text-align: center; }
+  .cta h2 { margin-bottom: var(--space-2); font-size: var(--text-2xl); }
+  .cta p { margin: 0 0 var(--space-6); color: var(--color-muted); }
+  .btn {
+    display: inline-block; background: var(--color-orange); color: var(--color-slate);
+    font-weight: 700; text-decoration: none; border-radius: 6px; padding: var(--space-3) var(--space-6);
+  }
+  .btn:hover { background: #ffbe3d; }
+
+  @media (max-width: 720px) { .hero h1 { font-size: var(--text-3xl); } }
+</style>

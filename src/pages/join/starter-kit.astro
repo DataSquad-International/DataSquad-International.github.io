@@ -95,7 +95,7 @@ const readingList = [
       </header>
       <ul class="checklist">
         {sec.items.map((item) => (
-          <li><span class="tick" aria-hidden="true">✓</span><span set:html={item} /></li>
+          <li><span class="tick" aria-hidden="true">✓</span><span>{item}</span></li>
         ))}
       </ul>
     </section>

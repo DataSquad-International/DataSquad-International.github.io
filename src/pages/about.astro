@@ -1,0 +1,83 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="About — DataSquad International"
+  description="DataSquad started at Carleton College and grew into a network of student-staffed data services programs across the US and Europe."
+>
+  <section class="hero">
+    <div class="inner">
+      <p class="eyebrow">Our story</p>
+      <h1>About DataSquad International</h1>
+      <p class="lede">
+        DataSquad is a simple idea with a long history: pay undergraduates to do
+        real data work, pair them with the researchers who need it, and everyone
+        comes out ahead.
+      </p>
+    </div>
+  </section>
+
+  <section class="prose">
+    <h2>Where it started</h2>
+    <p>
+      The model grew out of decades of data-services work by Paula Lackie at
+      Carleton College. She saw it as a win for everyone: more researchers get
+      help than any one person could give, students get genuine hands-on data
+      experience, and the campus gains data services it wouldn't otherwise have.
+      Carleton's DataSquad turned that idea into a standing, student-staffed
+      service.
+    </p>
+
+    <h2>How it grew</h2>
+    <p>
+      UCLA adopted the model at the Library Data Science Center, where it became a
+      program of its own, supported by a gift from Norman Powell. From there the
+      idea kept spreading. DataSquad International is the network those programs
+      form: a place to find each other, share what works, and help new
+      institutions start their own squads. Member programs now span the US and
+      Europe, including Carleton College, UCLA, and GESIS in Germany.
+    </p>
+
+    <h2>What we believe</h2>
+    <ul>
+      <li><strong>Students lead the work.</strong> Undergraduates are the analysts, not bystanders.</li>
+      <li><strong>Open by default.</strong> Open data, open source, and an open record of how squads run.</li>
+      <li><strong>Support, not substitution.</strong> We help researchers work with their data; we don't take over the research.</li>
+      <li><strong>A network of shared expertise.</strong> Every squad learns from the others.</li>
+    </ul>
+
+    <div class="links">
+      <a class="btn" href="/people">Meet the people →</a>
+      <a class="btn ghost" href="/model">How the model works →</a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero { background: var(--color-navy); color: var(--color-white); }
+  .hero .inner { max-width: var(--max-width); margin: 0 auto; padding: var(--space-16) var(--space-6); }
+  .eyebrow {
+    margin: 0 0 var(--space-3); font-size: var(--text-xs); letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--color-orange); font-weight: 700;
+  }
+  .hero h1 { margin: 0 0 var(--space-4); color: var(--color-white); font-size: var(--text-4xl); }
+  .lede { margin: 0; font-size: var(--text-lg); color: #cdd6e3; max-width: 60ch; }
+
+  .prose { max-width: 720px; margin: 0 auto; padding: var(--space-12) var(--space-6); font-size: var(--text-lg); line-height: 1.7; }
+  .prose h2 { font-size: var(--text-2xl); margin: var(--space-8) 0 var(--space-3); }
+  .prose h2:first-child { margin-top: 0; }
+  .prose p { margin: 0 0 var(--space-6); }
+  .prose ul { margin: 0 0 var(--space-6); padding-left: var(--space-6); display: grid; gap: var(--space-2); }
+
+  .links { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-8); }
+  .btn {
+    display: inline-block; background: var(--color-orange); color: var(--color-slate);
+    font-weight: 700; text-decoration: none; border-radius: 6px; padding: var(--space-3) var(--space-6); font-size: var(--text-base);
+  }
+  .btn:hover { background: #ffbe3d; }
+  .btn.ghost { background: transparent; color: var(--color-navy); border: 1px solid var(--color-navy); }
+  .btn.ghost:hover { background: var(--color-canvas); color: var(--color-navy); }
+
+  @media (max-width: 720px) { .hero h1 { font-size: var(--text-3xl); } }
+</style>

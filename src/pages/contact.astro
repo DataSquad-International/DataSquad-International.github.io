@@ -1,0 +1,104 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const ISSUE_CHOOSER =
+  'https://github.com/DataSquad-International/DataSquad-International.github.io/issues/new/choose';
+const GH_ORG = 'https://github.com/DataSquad-International';
+// TODO: replace with the real network inbox before launch.
+const EMAIL = 'hello@datasquad.info';
+
+const routes = [
+  {
+    who: 'Institutions',
+    body: 'Interested in starting a DataSquad? Open an interest issue and a network lead will follow up.',
+    cta: 'Express interest →',
+    href: ISSUE_CHOOSER,
+    external: true,
+  },
+  {
+    who: 'Students',
+    body: 'Want to get involved? If your campus has a DataSquad, contact your local program. Otherwise, use the get-involved form.',
+    cta: 'Get involved →',
+    href: ISSUE_CHOOSER,
+    external: true,
+  },
+  {
+    who: 'Researchers',
+    body: 'Looking for data help? Find a DataSquad at your institution and request a consultation there.',
+    cta: 'Find a squad →',
+    href: '/institutions',
+    external: false,
+  },
+];
+---
+
+<Layout
+  title="Contact — DataSquad International"
+  description="How to reach the DataSquad International network, and where to go depending on what you need."
+>
+  <section class="hero">
+    <div class="inner">
+      <p class="eyebrow">Get in touch</p>
+      <h1>Contact</h1>
+      <p class="lede">
+        The fastest route depends on who you are. Pick the one that fits.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <ul class="routes">
+      {routes.map((r) => (
+        <li class="route">
+          <h2>{r.who}</h2>
+          <p>{r.body}</p>
+          <a
+            href={r.href}
+            {...(r.external ? { target: '_blank', rel: 'noopener' } : {})}
+          >
+            {r.cta}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="general">
+      <h2>Prefer email?</h2>
+      <p>
+        For anything else, email <a href={`mailto:${EMAIL}`}>{EMAIL}</a>, or find
+        the network on <a href={GH_ORG} target="_blank" rel="noopener">GitHub</a>.
+      </p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero { background: var(--color-navy); color: var(--color-white); }
+  .hero .inner { max-width: var(--max-width); margin: 0 auto; padding: var(--space-16) var(--space-6); }
+  .eyebrow {
+    margin: 0 0 var(--space-3); font-size: var(--text-xs); letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--color-orange); font-weight: 700;
+  }
+  .hero h1 { margin: 0 0 var(--space-4); color: var(--color-white); font-size: var(--text-4xl); }
+  .lede { margin: 0; font-size: var(--text-lg); color: #cdd6e3; max-width: 60ch; }
+
+  .section { max-width: var(--max-width); margin: 0 auto; padding: var(--space-12) var(--space-6); }
+  .routes {
+    list-style: none; margin: 0 0 var(--space-12); padding: 0; display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-6);
+  }
+  .route {
+    background: var(--color-white); border: 1px solid #e3e6ea;
+    border-top: 3px solid var(--color-steel); border-radius: 0 0 8px 8px; padding: var(--space-6);
+  }
+  .route h2 { margin: 0 0 var(--space-2); font-size: var(--text-xl); }
+  .route p { margin: 0 0 var(--space-4); color: #555; font-size: var(--text-sm); line-height: 1.6; }
+  .route a { font-weight: 700; text-decoration: none; color: var(--color-navy); }
+  .route a:hover { color: var(--color-steel); }
+
+  .general h2 { font-size: var(--text-2xl); margin: 0 0 var(--space-2); }
+  .general p { margin: 0; color: #555; }
+  .general a { color: var(--color-steel); font-weight: 700; text-decoration: none; }
+
+  @media (max-width: 720px) { .hero h1 { font-size: var(--text-3xl); } }
+</style>

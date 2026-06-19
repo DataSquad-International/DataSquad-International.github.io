@@ -4,6 +4,11 @@ interface Props {
   schema: Record<string, unknown>;
 }
 const { schema } = Astro.props;
-const json = JSON.stringify({ '@context': 'https://schema.org', ...schema });
+// Escape `<` so feed-derived strings (titles/descriptions) can't break out of
+// the <script> block with a literal </script>. set:html does no escaping itself.
+const json = JSON.stringify({ '@context': 'https://schema.org', ...schema }).replace(
+  /</g,
+  '\\u003c'
+);
 ---
 <script type="application/ld+json" set:html={json} is:inline />
