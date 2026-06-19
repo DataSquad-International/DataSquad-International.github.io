@@ -1,0 +1,9 @@
+---
+// Renders a JSON-LD <script>. Pass any schema.org object as `schema`.
+interface Props {
+  schema: Record<string, unknown>;
+}
+const { schema } = Astro.props;
+const json = JSON.stringify({ '@context': 'https://schema.org', ...schema });
+---
+<script type="application/ld+json" set:html={json} is:inline />

@@ -1,0 +1,64 @@
+# Social syndication — OPT-IN, DISABLED BY DEFAULT.
+#
+# To enable: rename this file to `syndicate.yml`, add the secrets you need
+# (Settings > Secrets and variables > Actions), and uncomment the steps you want.
+#
+# It posts the newest item from the freshly-built /feed.json to social networks.
+# LinkedIn is intentionally NOT automated here — see docs/SYNDICATION.md for why
+# (use Buffer/Zapier/Make against /rss.xml instead). The LinkedIn step below is a
+# documented placeholder for the rare case where you have an approved app.
+
+name: Syndicate latest post
+
+on:
+  # Run after the site deploys, so /feed.json is current.
+  workflow_run:
+    workflows: ["Deploy to GitHub Pages"]   # match your deploy workflow name
+    types: [completed]
+  workflow_dispatch:
+
+jobs:
+  syndicate:
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get newest post
+        id: post
+        run: |
+          ITEM=$(curl -fsSL https://datasquad.info/feed.json | jq '.items[0]')
+          echo "title=$(echo "$ITEM" | jq -r .title)" >> "$GITHUB_OUTPUT"
+          echo "url=$(echo "$ITEM" | jq -r .url)" >> "$GITHUB_OUTPUT"
+
+      # --- Mastodon (simple, fully supported) -------------------------------
+      # Secret needed: MASTODON_TOKEN  (and set MASTODON_HOST below)
+      #
+      # - name: Post to Mastodon
+      #   env:
+      #     TOKEN: ${{ secrets.MASTODON_TOKEN }}
+      #     HOST: mastodon.social
+      #   run: |
+      #     curl -sf "https://$HOST/api/v1/statuses" \
+      #       -H "Authorization: Bearer $TOKEN" \
+      #       --data-urlencode "status=${{ steps.post.outputs.title }} ${{ steps.post.outputs.url }}"
+
+      # --- Bluesky (needs an app password) ----------------------------------
+      # Secrets needed: BLUESKY_HANDLE, BLUESKY_APP_PASSWORD
+      # Uses @atproto/api in a tiny inline script. See docs/SYNDICATION.md.
+
+      # --- LinkedIn (only with an APPROVED app + org token) -----------------
+      # Secrets needed: LINKEDIN_ACCESS_TOKEN, LINKEDIN_ORG_URN
+      # Token expires ~every 60 days. For most teams, use Buffer/Zapier instead.
+      #
+      # - name: Post to LinkedIn org page
+      #   env:
+      #     TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+      #     ORG: ${{ secrets.LINKEDIN_ORG_URN }}   # e.g. urn:li:organization:123456
+      #   run: |
+      #     curl -sf https://api.linkedin.com/v2/ugcPosts \
+      #       -H "Authorization: Bearer $TOKEN" \
+      #       -H "X-Restli-Protocol-Version: 2.0.0" \
+      #       -H "Content-Type: application/json" \
+      #       -d "{\"author\":\"$ORG\",\"lifecycleState\":\"PUBLISHED\",\"specificContent\":{\"com.linkedin.ugc.ShareContent\":{\"shareCommentary\":{\"text\":\"${{ steps.post.outputs.title }} ${{ steps.post.outputs.url }}\"},\"shareMediaCategory\":\"ARTICLE\",\"media\":[{\"status\":\"READY\",\"originalUrl\":\"${{ steps.post.outputs.url }}\"}]}},\"visibility\":{\"com.linkedin.ugc.MemberNetworkVisibility\":\"PUBLIC\"}}"
+
+      - name: No-op (remove when you enable a step above)
+        run: echo "Syndication scaffold ran for '${{ steps.post.outputs.title }}'. Enable a step in this file to actually post."

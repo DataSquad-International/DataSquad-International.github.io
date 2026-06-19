@@ -4,5 +4,7 @@ ror_id: "046rm7j60"
 contact_name: Tim Dennis
 contact_email: tdennis@library.ucla.edu
 local_program_url: https://ucla-datasquad.github.io/
+brand_color: "#2774AE"      # UCLA Blue (Pantone 2383C, official)
+brand_color_alt: "#FFD100"  # UCLA Gold (Pantone 109C, official)
 description: The founding UCLA DataSquad program, based at the UCLA Library Data Science Center. Student data analysts support researchers across campus with data cleaning, analysis, visualization, and management.
 active: true

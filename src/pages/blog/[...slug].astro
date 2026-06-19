@@ -1,0 +1,29 @@
+---
+import { getCollection, render } from 'astro:content';
+import BlogPost from '../../layouts/BlogPost.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) =>
+    import.meta.env.PROD ? data.draft !== true : true
+  );
+  const institutions = await getCollection('institutions');
+  const nameById = new Map(institutions.map((i) => [i.id, i.data.name]));
+
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: {
+      post,
+      sourceName: post.data.institution
+        ? nameById.get(post.data.institution) ?? 'DataSquad International'
+        : 'DataSquad International',
+    },
+  }));
+}
+
+const { post, sourceName } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BlogPost post={post} sourceName={sourceName}>
+  <Content />
+</BlogPost>

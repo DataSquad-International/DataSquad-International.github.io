@@ -1,0 +1,142 @@
+---
+import Layout from './Layout.astro';
+import StructuredData from '../components/StructuredData.astro';
+import ShareLinks from '../components/ShareLinks.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  sourceName: string;
+}
+const { post, sourceName } = Astro.props;
+const { data } = post;
+
+const site = Astro.site ?? new URL('https://datasquad.info');
+const permalink = new URL(Astro.url.pathname, site).href;
+const canonical = data.canonicalURL ?? permalink;
+const imageURL = data.heroImage ?? '/datasquad_international_logo.png';
+
+const schema = {
+  '@type': 'BlogPosting',
+  headline: data.title,
+  description: data.description,
+  datePublished: data.pubDate.toISOString(),
+  ...(data.updatedDate && { dateModified: data.updatedDate.toISOString() }),
+  author: { '@type': 'Person', name: data.author },
+  publisher: {
+    '@type': 'Organization',
+    name: 'DataSquad International',
+    url: site.href,
+  },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': permalink },
+  url: canonical,
+  ...(data.tags.length && { keywords: data.tags.join(', ') }),
+  image: new URL(imageURL, site).href,
+};
+
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<Layout
+  title={`${data.title} — DataSquad International`}
+  description={data.description}
+  type="article"
+  image={imageURL}
+  canonical={canonical}
+  publishedTime={data.pubDate.toISOString()}
+  modifiedTime={data.updatedDate?.toISOString()}
+  author={data.author}
+  tags={data.tags}
+>
+  <StructuredData slot="head" schema={schema} />
+
+  <article class="post">
+    <p class="back"><a href="/blog">← All updates</a></p>
+    <header class="post-header">
+      <div class="meta">
+        <span class="source">{sourceName}</span>
+        <time datetime={data.pubDate.toISOString()}>{fmtDate(data.pubDate)}</time>
+      </div>
+      <h1>{data.title}</h1>
+      <p class="byline">By {data.author}</p>
+      {data.tags.length > 0 && (
+        <ul class="tags">
+          {data.tags.map((t) => <li>{t}</li>)}
+        </ul>
+      )}
+    </header>
+
+    <div class="prose">
+      <slot />
+    </div>
+
+    <ShareLinks url={permalink} title={data.title} />
+  </article>
+</Layout>
+
+<style>
+  .post {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6);
+  }
+  .back {
+    margin: 0 0 var(--space-6);
+    font-size: var(--text-sm);
+  }
+  .back a {
+    text-decoration: none;
+  }
+  .meta {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+    margin-bottom: var(--space-2);
+  }
+  .source {
+    color: var(--color-steel);
+    font-weight: 500;
+  }
+  .post-header h1 {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-4xl);
+  }
+  .byline {
+    margin: 0;
+    color: #555;
+    font-size: var(--text-base);
+  }
+  .tags {
+    list-style: none;
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .tags li {
+    background: #eef1f4;
+    color: var(--color-navy);
+    border-radius: 12px;
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--text-xs);
+  }
+  .prose {
+    margin-top: var(--space-8);
+    font-size: var(--text-lg);
+    line-height: 1.7;
+  }
+  .prose :global(p) {
+    margin: 0 0 var(--space-6);
+  }
+  .prose :global(h2) {
+    margin: var(--space-8) 0 var(--space-3);
+    font-size: var(--text-2xl);
+  }
+  .prose :global(a) {
+    color: var(--color-steel);
+  }
+</style>

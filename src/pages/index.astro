@@ -1,17 +1,214 @@
 ---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
 
+const institutions = (await getCollection('institutions'))
+  .filter((i) => i.data.active)
+  .sort((a, b) => a.data.name.localeCompare(b.data.name));
+
+const goals = [
+  {
+    title: 'Showcase',
+    body: 'Impact stories and a clear picture of the model for potential adopters and funders.',
+    accent: 'var(--color-steel)',
+  },
+  {
+    title: 'Recruit',
+    body: 'Bring new institutions and student analysts into a growing peer network.',
+    accent: 'var(--color-orange)',
+  },
+  {
+    title: 'Archive',
+    body: 'A lasting record of what student data analysts achieve across campuses.',
+    accent: 'var(--color-navy)',
+  },
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="DataSquad International — student-staffed data services">
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">A network across the US and Europe</p>
+      <h1>Students powering research, one dataset at a time</h1>
+      <p class="lede">
+        Undergraduate analysts help researchers clean, analyze, and visualize data.
+        An open model, built on open source, led by the students who run it.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="/join">Adopt the model</a>
+        <a class="btn btn-ghost" href="/model">See how it works →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section goals">
+    <div class="grid-3">
+      {goals.map(({ title, body, accent }) => (
+        <article class="card" style={`--card-accent: ${accent}`}>
+          <h2>{title}</h2>
+          <p>{body}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section institutions">
+    <h2 class="section-label">Participating institutions</h2>
+    <ul class="inst-list">
+      {institutions.map((inst) => (
+        <li>
+          <a href={inst.data.local_program_url ?? inst.data.url}>
+            <span
+              class="dot"
+              style={`background: ${inst.data.brand_color ?? 'var(--color-steel)'}`}
+              aria-hidden="true"
+            ></span>
+            {inst.data.name}
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="inst-cta">
+      <a href="/institutions">View the full directory →</a>
+    </p>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    background: var(--color-navy);
+    color: var(--color-white);
+  }
+  .hero-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--space-16) var(--space-6);
+  }
+  .eyebrow {
+    margin: 0 0 var(--space-3);
+    font-size: var(--text-xs);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--color-orange);
+    font-weight: 500;
+  }
+  .hero h1 {
+    margin: 0 0 var(--space-4);
+    font-size: var(--text-4xl);
+    color: var(--color-white);
+    max-width: 18ch;
+  }
+  .lede {
+    margin: 0 0 var(--space-8);
+    font-size: var(--text-lg);
+    color: #cdd6e3;
+    max-width: 52ch;
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .btn {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: var(--text-base);
+    border-radius: 6px;
+    padding: var(--space-3) var(--space-6);
+  }
+  .btn-primary {
+    background: var(--color-orange);
+    color: var(--color-slate);
+  }
+  .btn-primary:hover {
+    background: #ffbe3d;
+    color: var(--color-slate);
+  }
+  .btn-ghost {
+    color: #cdd6e3;
+    padding-left: 0;
+  }
+  .btn-ghost:hover {
+    color: var(--color-white);
+  }
+
+  .section {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6);
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+  }
+  .card {
+    background: var(--color-white);
+    border: 1px solid #e3e6ea;
+    border-top: 3px solid var(--card-accent);
+    border-radius: 0 0 8px 8px;
+    padding: var(--space-6);
+  }
+  .card h2 {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-xl);
+  }
+  .card p {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: #555;
+  }
+
+  .section-label {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--color-muted);
+    margin: 0 0 var(--space-4);
+  }
+  .inst-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .inst-list a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    background: var(--color-white);
+    border: 1px solid #e3e6ea;
+    border-radius: 20px;
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--color-navy);
+    text-decoration: none;
+  }
+  .inst-list .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .inst-list a:hover {
+    border-color: var(--color-steel);
+    color: var(--color-steel);
+  }
+  .inst-cta {
+    margin: var(--space-6) 0 0;
+    font-size: var(--text-sm);
+  }
+
+  @media (max-width: 720px) {
+    .grid-3 {
+      grid-template-columns: 1fr;
+    }
+    .hero h1 {
+      font-size: var(--text-3xl);
+    }
+  }
+</style>

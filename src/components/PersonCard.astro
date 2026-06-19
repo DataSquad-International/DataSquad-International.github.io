@@ -1,0 +1,120 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  person: CollectionEntry<'people'>;
+  showInstitution?: boolean;
+}
+const { person, showInstitution = true } = Astro.props;
+const p = person.data;
+
+function initials(name: string): string {
+  return name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((n) => n[0]?.toUpperCase() ?? '')
+    .join('');
+}
+---
+
+<li class="person">
+  <div class="avatar">
+    {p.headshot ? (
+      <img src={p.headshot} alt={`Photo of ${p.name}`} loading="lazy" width="72" height="72" />
+    ) : (
+      <span class="initials" aria-hidden="true">{initials(p.name)}</span>
+    )}
+  </div>
+  <div class="person-body">
+    <h3>{p.name}</h3>
+    <p class="role">{p.role}</p>
+    {showInstitution && <p class="inst">{p.institution}</p>}
+    {p.bio && <p class="bio">{p.bio}</p>}
+    <div class="links">
+      {p.linkedin && (
+        <a href={p.linkedin} target="_blank" rel="noopener"
+           aria-label={`${p.name} on LinkedIn`}>LinkedIn ↗</a>
+      )}
+      {p.github && (
+        <a href={p.github} target="_blank" rel="noopener"
+           aria-label={`${p.name} on GitHub`}>GitHub ↗</a>
+      )}
+      {p.orcid && (
+        <a href={`https://orcid.org/${p.orcid}`} target="_blank" rel="noopener"
+           aria-label={`${p.name} on ORCID`}>ORCID ↗</a>
+      )}
+      {p.email && (
+        <a href={`mailto:${p.email}`} aria-label={`Email ${p.name}`}>Email ↗</a>
+      )}
+    </div>
+  </div>
+</li>
+
+<style>
+  .person {
+    background: var(--color-white);
+    border: 1px solid #e3e6ea;
+    border-top: 3px solid var(--color-steel);
+    border-radius: 0 0 8px 8px;
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--color-navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .initials {
+    color: var(--color-orange);
+    font-weight: 700;
+    font-size: var(--text-xl);
+  }
+  .person-body h3 {
+    margin: 0;
+    font-size: var(--text-lg);
+  }
+  .role {
+    margin: 2px 0 0;
+    color: var(--color-steel);
+    font-weight: 700;
+    font-size: var(--text-sm);
+  }
+  .inst {
+    margin: 2px 0 0;
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+  }
+  .bio {
+    margin: var(--space-2) 0 0;
+    font-size: var(--text-sm);
+    color: var(--color-slate);
+  }
+  .links {
+    margin-top: var(--space-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+  .links a {
+    font-size: var(--text-sm);
+    color: var(--color-navy);
+    text-decoration: none;
+    font-weight: 700;
+  }
+  .links a:hover {
+    color: var(--color-steel);
+  }
+</style>

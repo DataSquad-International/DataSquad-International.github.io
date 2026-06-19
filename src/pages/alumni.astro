@@ -1,0 +1,130 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PersonCard from '../components/PersonCard.astro';
+import { getCollection } from 'astro:content';
+
+const alumni = (await getCollection('people')).filter(
+  (p) => p.data.status === 'alumni'
+);
+
+// Group by institution, largest cohort first.
+const byInstitution = new Map<string, typeof alumni>();
+for (const a of alumni) {
+  const key = a.data.institution;
+  if (!byInstitution.has(key)) byInstitution.set(key, []);
+  byInstitution.get(key)!.push(a);
+}
+const sections = [...byInstitution.entries()]
+  .map(([institution, members]) => ({
+    institution,
+    members: members.sort(
+      (a, b) => a.data.order - b.data.order || a.data.name.localeCompare(b.data.name)
+    ),
+  }))
+  .sort((a, b) => b.members.length - a.members.length);
+---
+
+<Layout
+  title="Alumni — DataSquad International"
+  description="The DataSquad Hall of Fame: former student analysts across the network's member institutions."
+>
+  <section class="alumni-hero">
+    <div class="inner">
+      <p class="eyebrow">Hall of Fame</p>
+      <h1>Alumni</h1>
+      <p class="lede">
+        {alumni.length} former DataSquad members across the network. They learned
+        the work here and took it into graduate programs, industry, and research
+        roles around the world.
+      </p>
+      <p class="back"><a href="/people">← Current people</a></p>
+    </div>
+  </section>
+
+  {sections.map((section) => (
+    <section class="group">
+      <header class="group-head">
+        <h2>{section.institution}</h2>
+        <span class="count">{section.members.length} alumni</span>
+      </header>
+      <ul class="cards">
+        {section.members.map((person) => (
+          <PersonCard person={person} showInstitution={false} />
+        ))}
+      </ul>
+    </section>
+  ))}
+</Layout>
+
+<style>
+  .alumni-hero {
+    background: var(--color-navy);
+    color: var(--color-white);
+  }
+  .alumni-hero .inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6);
+  }
+  .eyebrow {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-xs);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--color-orange);
+    font-weight: 700;
+  }
+  .alumni-hero h1 {
+    margin: 0 0 var(--space-3);
+    color: var(--color-white);
+    font-size: var(--text-4xl);
+  }
+  .lede {
+    margin: 0 0 var(--space-4);
+    color: #cdd6e3;
+    font-size: var(--text-lg);
+    max-width: 60ch;
+  }
+  .back {
+    margin: 0;
+    font-size: var(--text-sm);
+  }
+  .back a {
+    color: var(--color-orange);
+    text-decoration: none;
+  }
+
+  .group {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6) 0;
+  }
+  .group:last-of-type {
+    padding-bottom: var(--space-8);
+  }
+  .group-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+    border-bottom: 2px solid #e3e6ea;
+    padding-bottom: var(--space-2);
+  }
+  .group-head h2 {
+    margin: 0;
+    font-size: var(--text-2xl);
+  }
+  .count {
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+  }
+
+  .cards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--space-6);
+  }
+</style>

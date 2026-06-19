@@ -1,0 +1,129 @@
+---
+const year = new Date().getFullYear();
+
+const columns = [
+  {
+    heading: 'Network',
+    links: [
+      { href: '/about', label: 'About' },
+      { href: '/model', label: 'The model' },
+      { href: '/institutions', label: 'Institutions' },
+      { href: '/people', label: 'People' },
+      { href: '/alumni', label: 'Alumni' },
+    ],
+  },
+  {
+    heading: 'Get involved',
+    links: [
+      { href: '/join', label: 'Adopt the model' },
+      { href: '/resources', label: 'Resources' },
+      { href: '/contact', label: 'Contact' },
+    ],
+  },
+];
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="footer-name">DataSquad International</span>
+      <p class="footer-tag">
+        Student-staffed data services, shared across institutions in the US and Europe.
+      </p>
+    </div>
+
+    {columns.map(({ heading, links }) => (
+      <nav class="footer-col" aria-label={heading}>
+        <h2 class="footer-heading">{heading}</h2>
+        <ul>
+          {links.map(({ href, label }) => (
+            <li><a href={href}>{label}</a></li>
+          ))}
+        </ul>
+      </nav>
+    ))}
+  </div>
+
+  <div class="footer-bar">
+    <span>© {year} DataSquad International</span>
+    <a href="https://github.com/DataSquad-International">Open source · BSD-3-Clause</a>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-slate);
+    color: #b8b8b8;
+    margin-top: var(--space-16);
+  }
+  .footer-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6);
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: var(--space-8);
+  }
+  .footer-name {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: var(--text-lg);
+    color: var(--color-white);
+  }
+  .footer-tag {
+    margin: var(--space-3) 0 0;
+    font-size: var(--text-sm);
+    max-width: 32ch;
+    line-height: 1.5;
+  }
+  .footer-heading {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--color-muted-dark);
+    margin: 0 0 var(--space-3);
+  }
+  .footer-col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .footer-col a {
+    color: #cfcfcf;
+    text-decoration: none;
+    font-size: var(--text-sm);
+  }
+  .footer-col a:hover {
+    color: var(--color-orange);
+  }
+  .footer-bar {
+    border-top: 1px solid #444;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-6);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--text-xs);
+    color: var(--color-muted-dark);
+  }
+  .footer-bar a {
+    color: var(--color-orange);
+    text-decoration: none;
+  }
+
+  @media (max-width: 640px) {
+    .footer-inner {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+    .footer-bar {
+      flex-direction: column;
+      gap: var(--space-2);
+      text-align: center;
+    }
+  }
+</style>

@@ -1,0 +1,200 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import StructuredData from '../../components/StructuredData.astro';
+import { getCollection } from 'astro:content';
+import { getAllPosts } from '../../lib/posts';
+
+const posts = await getAllPosts();
+
+// Map institution id -> its accent color, so each card reads as its squad.
+const institutions = await getCollection('institutions');
+const brandById = new Map(
+  institutions.map((i) => [i.id, i.data.brand_color])
+);
+
+const site = Astro.site ?? new URL('https://datasquad.info');
+const schema = {
+  '@type': 'Blog',
+  name: 'DataSquad International',
+  description:
+    'Updates from a network of student-staffed data services programs across the US and Europe.',
+  url: new URL('/blog/', site).href,
+  blogPost: posts.slice(0, 20).map((p) => ({
+    '@type': 'BlogPosting',
+    headline: p.title,
+    url: p.url,
+    datePublished: p.date.toISOString(),
+    author: { '@type': 'Person', name: p.author ?? p.sourceName },
+  })),
+};
+
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+---
+
+<Layout
+  title="Blog — DataSquad International"
+  description="Updates from across the DataSquad network: native posts plus highlights pulled from each member squad's own blog."
+>
+  <StructuredData slot="head" schema={schema} />
+
+  <section class="blog-hero">
+    <div class="inner">
+      <p class="eyebrow">Updates from the network</p>
+      <h1>The DataSquad blog</h1>
+      <p class="lede">
+        Posts from DataSquad International, plus highlights pulled straight from
+        each member squad's own blog.
+      </p>
+      <p class="feeds">
+        Follow along:
+        <a href="/rss.xml">RSS</a> ·
+        <a href="/atom.xml">Atom</a> ·
+        <a href="/feed.json">JSON</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="list">
+    {posts.length === 0 && <p class="empty">No posts yet — check back soon.</p>}
+    <ul>
+      {posts.map((p) => (
+        <li
+          class="post-card"
+          style={p.institution && brandById.get(p.institution)
+            ? `border-left-color: ${brandById.get(p.institution)}`
+            : undefined}
+        >
+          <div class="card-meta">
+            <span class="source">{p.sourceName}</span>
+            <time datetime={p.date.toISOString()}>{fmtDate(p.date)}</time>
+            {p.external && <span class="ext-badge">From their blog ↗</span>}
+          </div>
+          <h2>
+            <a href={p.url} {...(p.external ? { target: '_blank', rel: 'noopener' } : {})}>
+              {p.title}
+            </a>
+          </h2>
+          <p class="excerpt">{p.description}</p>
+          {p.tags.length > 0 && (
+            <ul class="tags">
+              {p.tags.slice(0, 4).map((t) => <li>{t}</li>)}
+            </ul>
+          )}
+        </li>
+      ))}
+    </ul>
+  </section>
+</Layout>
+
+<style>
+  .blog-hero {
+    background: var(--color-navy);
+    color: var(--color-white);
+  }
+  .blog-hero .inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6);
+  }
+  .eyebrow {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-xs);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--color-orange);
+    font-weight: 500;
+  }
+  .blog-hero h1 {
+    margin: 0 0 var(--space-3);
+    color: var(--color-white);
+    font-size: var(--text-4xl);
+  }
+  .lede {
+    margin: 0 0 var(--space-4);
+    color: #cdd6e3;
+    font-size: var(--text-lg);
+    max-width: 54ch;
+  }
+  .feeds {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: #9fb0c4;
+  }
+  .feeds a {
+    color: var(--color-orange);
+    text-decoration: none;
+  }
+
+  .list {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6);
+  }
+  .list ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-6);
+  }
+  .post-card {
+    background: var(--color-white);
+    border: 1px solid #e3e6ea;
+    border-left: 4px solid var(--color-steel);
+    border-radius: 0 8px 8px 0;
+    padding: var(--space-6);
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+    margin-bottom: var(--space-2);
+  }
+  .source {
+    color: var(--color-steel);
+    font-weight: 500;
+  }
+  .ext-badge {
+    background: #fff4dd;
+    color: #8a5b00;
+    font-size: var(--text-xs);
+    border-radius: 12px;
+    padding: 2px var(--space-2);
+  }
+  .post-card h2 {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-2xl);
+  }
+  .post-card h2 a {
+    text-decoration: none;
+  }
+  .post-card h2 a:hover {
+    color: var(--color-steel);
+  }
+  .excerpt {
+    margin: 0;
+    color: #555;
+  }
+  .tags {
+    list-style: none;
+    margin: var(--space-4) 0 0 !important;
+    padding: 0;
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .tags li {
+    background: #eef1f4;
+    color: var(--color-navy);
+    border-radius: 12px;
+    padding: 2px var(--space-3);
+    font-size: var(--text-xs);
+  }
+  .empty {
+    color: var(--color-muted);
+  }
+</style>

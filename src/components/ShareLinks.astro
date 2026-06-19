@@ -1,0 +1,54 @@
+---
+interface Props {
+  url: string;
+  title: string;
+}
+const { url, title } = Astro.props;
+const enc = encodeURIComponent;
+const linkedin = `https://www.linkedin.com/sharing/share-offsite/?url=${enc(url)}`;
+const bluesky = `https://bsky.app/intent/compose?text=${enc(`${title} ${url}`)}`;
+const mastodon = `https://mastodonshare.com/?text=${enc(title)}&url=${enc(url)}`;
+---
+
+<div class="share">
+  <span class="share-label">Share</span>
+  <a class="share-link" href={linkedin} target="_blank" rel="noopener" aria-label="Share on LinkedIn">
+    LinkedIn
+  </a>
+  <a class="share-link" href={bluesky} target="_blank" rel="noopener" aria-label="Share on Bluesky">
+    Bluesky
+  </a>
+  <a class="share-link" href={mastodon} target="_blank" rel="noopener" aria-label="Share on Mastodon">
+    Mastodon
+  </a>
+</div>
+
+<style>
+  .share {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin: var(--space-8) 0 0;
+    padding-top: var(--space-6);
+    border-top: 1px solid #e3e6ea;
+  }
+  .share-label {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--color-muted);
+  }
+  .share-link {
+    font-size: var(--text-sm);
+    color: var(--color-navy);
+    text-decoration: none;
+    border: 1px solid #e3e6ea;
+    border-radius: 6px;
+    padding: var(--space-1) var(--space-3);
+  }
+  .share-link:hover {
+    border-color: var(--color-steel);
+    color: var(--color-steel);
+  }
+</style>
