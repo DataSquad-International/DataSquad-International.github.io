@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import './fonts.css';
 @import './tokens.css';
 
 *, *::before, *::after {
@@ -25,7 +25,7 @@ a {
 }
 
 a:hover {
-  color: var(--color-steel);
+  color: var(--color-link);
 }
 
 .skip-link {

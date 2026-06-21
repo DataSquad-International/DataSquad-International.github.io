@@ -6,7 +6,8 @@
 :root {
   /* Colors */
   --color-navy:      #1D3557;   /* primary, academic trust */
-  --color-steel:     #457B9D;   /* secondary, mid-tone bridge */
+  --color-steel:     #457B9D;   /* secondary mid-tone, decorative borders/accents only */
+  --color-link:      #356A8A;   /* interactive text/links, AA on canvas (5.56:1) */
   --color-orange:    #F9AE1A;   /* accent, student energy, CTAs */
   --color-canvas:    #F8F9FA;   /* background neutral */
   --color-slate:     #2D2D2D;   /* logo anchor, axes, body text */
