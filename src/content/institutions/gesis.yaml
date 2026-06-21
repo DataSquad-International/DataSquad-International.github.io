@@ -1,9 +1,0 @@
-name: GESIS – Leibniz Institute for the Social Sciences
-url: https://www.gesis.org/en/home
-ror_id: "018afyw53"
-contact_name: Deborah Wiltshire
-local_program_url: https://www.gesis.org/en/home
-brand_color: "#0090D4"      # GESIS azure, approximated from official CMYK 100/10/0/0 (no published hex)
-brand_color_alt: "#00357A"  # GESIS deep blue, approximated from CMYK 100/65/0/30
-description: GESIS is the largest German infrastructure institute for the social sciences, based in Cologne. Deborah Wiltshire contributes to DataSquad International from GESIS.
-active: true

@@ -1,6 +1,6 @@
 ---
 title: "Introducing the DataSquad International network"
-description: "A shared home for student-staffed data services programs across the US and Europe, plus a blog that pulls updates from every member squad."
+description: "A shared home for student-staffed data services programs, plus a blog that pulls updates from every member squad."
 pubDate: 2026-06-19
 author: "Tim Dennis"
 institution: "ucla"
@@ -13,8 +13,8 @@ spread, and DataSquad International is where the institutions running it can fin
 each other, share what works, and show off what their students build.
 
 This blog is part of that. Every member squad keeps its own site and its own
-voice. What we do here is gather the highlights into one feed, so a researcher in
-Cologne can see what students in Los Angeles shipped last week, and a prospective
+voice. What we do here is gather the highlights into one feed, so a researcher at
+one campus can see what students at another shipped last week, and a prospective
 adopter can read the whole network's story in one place.
 
 If your institution runs a student data-services program and wants in, the

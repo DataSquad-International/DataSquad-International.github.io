@@ -7,7 +7,7 @@ export async function GET(context: APIContext) {
   return rss({
     title: 'DataSquad International',
     description:
-      'Updates from a network of student-staffed data services programs across the US and Europe.',
+      'Updates from a growing network of student-staffed data services programs.',
     site: context.site ?? 'https://datasquad.info',
     items: posts.map((p) => ({
       title: p.title,

@@ -37,7 +37,7 @@ ${tags}
   const body = `<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>DataSquad International</title>
-  <subtitle>Updates from student-staffed data services programs across the US and Europe.</subtitle>
+  <subtitle>Updates from a growing network of student-staffed data services programs.</subtitle>
   <link href="${site}/atom.xml" rel="self" />
   <link href="${site}/" />
   <id>${site}/</id>

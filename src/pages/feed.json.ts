@@ -11,7 +11,7 @@ export async function GET(context: APIContext) {
     home_page_url: `${site}/`,
     feed_url: `${site}/feed.json`,
     description:
-      'Updates from a network of student-staffed data services programs across the US and Europe.',
+      'Updates from a growing network of student-staffed data services programs.',
     language: 'en-US',
     items: posts.map((p) => ({
       id: p.permalink,
