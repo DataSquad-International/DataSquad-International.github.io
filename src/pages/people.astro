@@ -6,18 +6,27 @@ import { getCollection } from 'astro:content';
 const people = await getCollection('people');
 
 const GROUPS = [
-  { key: 'lead', title: 'Leads', blurb: 'The people steering the network.' },
-  { key: 'staff', title: 'Staff & contributors', blurb: 'Program staff and content contributors.' },
-  { key: 'current', title: 'Current analysts', blurb: 'Students doing the data work right now.' },
-] as const;
+  {
+    title: 'Staff & contributors',
+    blurb: 'The people who run and support the network.',
+    statuses: ['lead', 'staff'],
+    cluster: false,
+  },
+  {
+    title: 'Current analysts',
+    blurb: 'Students doing the data work right now.',
+    statuses: ['current'],
+    cluster: true,
+  },
+];
 
 const byGroup = GROUPS.map((g) => ({
   ...g,
   members: people
-    .filter((p) => p.data.status === g.key)
+    .filter((p) => g.statuses.includes(p.data.status))
     .sort(
       (a, b) =>
-        a.data.institution.localeCompare(b.data.institution) ||
+        (g.cluster ? a.data.institution.localeCompare(b.data.institution) : 0) ||
         a.data.order - b.data.order ||
         a.data.name.localeCompare(b.data.name)
     ),
