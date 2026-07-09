@@ -8,7 +8,8 @@
   --color-navy:      #1D3557;   /* primary, academic trust */
   --color-steel:     #457B9D;   /* secondary mid-tone, decorative borders/accents only */
   --color-link:      #356A8A;   /* interactive text/links, AA on canvas (5.56:1) */
-  --color-orange:    #F9AE1A;   /* accent, student energy, CTAs */
+  --color-orange:    #F9AE1A;   /* accent, student energy, CTAs; on navy/dark only, fails contrast as text on white/canvas */
+  --color-orange-text: #936304; /* darkened orange for text on white/canvas, AA (4.9:1+) */
   --color-canvas:    #F8F9FA;   /* background neutral */
   --color-slate:     #2D2D2D;   /* logo anchor, axes, body text */
   --color-muted:     #6B6B6B;   /* secondary text, AA on white (4.97:1) */
