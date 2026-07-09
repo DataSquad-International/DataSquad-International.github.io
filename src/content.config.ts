@@ -48,15 +48,32 @@ const blog = defineCollection({
 });
 
 const projects = defineCollection({
-  loader: glob({ pattern: '**/*.yaml', base: './src/content/projects' }),
+  loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
   schema: z.object({
     title: z.string(),
+    // one-line dek shown on the card and in <meta description>
     description: z.string(),
+    // institution ids (matches institutions/*.yaml filenames)
     institutions: z.array(z.string()),
-    contributors: z.array(z.string()).default([]),
-    year: z.number(),
+    team: z.array(z.string()).default([]),
+    // free text, not a range type: "2021–2025", "2023", "2023–present"
+    years: z.string(),
+    tools: z.array(z.string()).default([]),
+    category: z.array(z.string()).default([]),
+    heroImage: z.string().optional(),
+    heroImageAlt: z.string().optional(),
+    quote: z
+      .object({
+        text: z.string(),
+        attribution: z.string(),
+      })
+      .optional(),
+    // set when the full write-up lives elsewhere; card links out instead of
+    // to an internal /projects/[slug] page
     url: z.string().url().optional(),
-    tags: z.array(z.string()).default([]),
+    // provenance: the original post this was adapted from, if any
+    sourceUrl: z.string().url().optional(),
+    draft: z.boolean().default(false),
   }),
 });
 

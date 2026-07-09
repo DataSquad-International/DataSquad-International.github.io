@@ -9,12 +9,16 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "a11y": "node scripts/a11y-check.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.3",
     "astro": "^6.3.3",
     "fast-xml-parser": "^5.9.3"
+  },
+  "devDependencies": {
+    "pa11y": "^9.1.1"
   }
 }

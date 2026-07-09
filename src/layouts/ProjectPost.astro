@@ -1,0 +1,258 @@
+---
+import Layout from './Layout.astro';
+import StructuredData from '../components/StructuredData.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+const { project } = Astro.props;
+const { data } = project;
+
+const institutions = await getCollection('institutions');
+const instNames = data.institutions.map(
+  (id) => institutions.find((i) => i.id === id)?.data.name ?? id
+);
+
+const site = Astro.site ?? new URL('https://datasquad.info');
+const permalink = new URL(Astro.url.pathname, site).href;
+const imageURL = data.heroImage ?? '/datasquad_international_logo.png';
+
+const schema = {
+  '@type': 'CreativeWork',
+  name: data.title,
+  description: data.description,
+  ...(data.team.length && { creator: data.team.map((name) => ({ '@type': 'Person', name })) }),
+  ...(data.tools.length && { keywords: data.tools.join(', ') }),
+  publisher: { '@type': 'Organization', name: 'DataSquad International', url: site.href },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': permalink },
+  url: permalink,
+  image: new URL(imageURL, site).href,
+};
+---
+
+<Layout
+  title={`${data.title} | DataSquad International`}
+  description={data.description}
+  type="article"
+  image={imageURL}
+>
+  <StructuredData slot="head" schema={schema} />
+
+  <article class="post">
+    <p class="back"><a href="/projects">← All examples</a></p>
+
+    <header class="post-header">
+      {data.category.length > 0 && (
+        <p class="eyebrow">{data.category.join(' · ')}</p>
+      )}
+      <h1>{data.title}</h1>
+      <p class="dek">{data.description}</p>
+      <p class="meta">
+        <span>{instNames.join(', ')}</span>
+        <span aria-hidden="true">·</span>
+        <span>{data.years}</span>
+      </p>
+    </header>
+
+    {data.heroImage && (
+      <img
+        class="hero-image"
+        src={data.heroImage}
+        alt={data.heroImageAlt ?? ''}
+        loading="eager"
+      />
+    )}
+
+    <div class="prose">
+      <slot />
+    </div>
+
+    {data.quote && (
+      <blockquote class="pull-quote">
+        <p>{data.quote.text}</p>
+        <cite>— {data.quote.attribution}</cite>
+      </blockquote>
+    )}
+
+    <dl class="fact-sheet">
+      <div>
+        <dt>Years</dt>
+        <dd>{data.years}</dd>
+      </div>
+      {data.team.length > 0 && (
+        <div>
+          <dt>Team</dt>
+          <dd>{data.team.join(', ')}</dd>
+        </div>
+      )}
+      {data.tools.length > 0 && (
+        <div>
+          <dt>Tools</dt>
+          <dd>
+            <ul class="chips">
+              {data.tools.map((t) => <li>{t}</li>)}
+            </ul>
+          </dd>
+        </div>
+      )}
+      {data.sourceUrl && (
+        <div>
+          <dt>Source</dt>
+          <dd><a href={data.sourceUrl} target="_blank" rel="noopener">Originally published ↗</a></dd>
+        </div>
+      )}
+    </dl>
+  </article>
+</Layout>
+
+<style>
+  .post {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6);
+  }
+  .back {
+    margin: 0 0 var(--space-6);
+    font-size: var(--text-sm);
+  }
+  .back a {
+    text-decoration: none;
+  }
+  .eyebrow {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-xs);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--color-orange-text);
+    font-weight: 700;
+  }
+  .post-header h1 {
+    margin: 0 0 var(--space-3);
+    font-size: var(--text-4xl);
+  }
+  .dek {
+    margin: 0 0 var(--space-3);
+    font-size: var(--text-lg);
+    color: #555;
+    line-height: 1.5;
+  }
+  .meta {
+    margin: 0;
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+  }
+
+  .hero-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: var(--space-8) 0;
+  }
+
+  .prose {
+    margin-top: var(--space-8);
+    font-size: var(--text-lg);
+    line-height: 1.7;
+  }
+  .prose :global(p) {
+    margin: 0 0 var(--space-6);
+  }
+  .prose :global(h2) {
+    margin: var(--space-10) 0 var(--space-3);
+    font-size: var(--text-2xl);
+  }
+  .prose :global(h3) {
+    margin: var(--space-8) 0 var(--space-2);
+    font-size: var(--text-lg);
+    color: var(--color-navy);
+    border-left: 3px solid var(--color-orange);
+    padding-left: var(--space-3);
+  }
+  .prose :global(a) {
+    color: var(--color-link);
+  }
+  .prose :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: var(--space-2) 0 var(--space-3);
+  }
+  .prose :global(em) {
+    font-style: italic;
+  }
+  .prose :global(blockquote) {
+    margin: var(--space-6) 0;
+    padding-left: var(--space-4);
+    border-left: 3px solid var(--color-steel);
+    color: var(--color-slate);
+    font-size: var(--text-base);
+  }
+
+  .pull-quote {
+    margin: var(--space-10) 0;
+    padding: var(--space-6) var(--space-8);
+    background: var(--color-navy);
+    border-radius: 8px;
+    border-left: none;
+  }
+  .pull-quote p {
+    margin: 0 0 var(--space-3);
+    color: var(--color-white);
+    font-size: var(--text-xl);
+    line-height: 1.5;
+  }
+  .pull-quote cite {
+    display: block;
+    font-style: normal;
+    color: var(--color-orange);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  .fact-sheet {
+    margin: var(--space-10) 0 0;
+    padding-top: var(--space-6);
+    border-top: 1px solid #e3e6ea;
+    display: grid;
+    gap: var(--space-4);
+  }
+  .fact-sheet dt {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--color-muted);
+    font-weight: 700;
+    margin-bottom: var(--space-1);
+  }
+  .fact-sheet dd {
+    margin: 0;
+    font-size: var(--text-base);
+    color: var(--color-slate);
+  }
+  .chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .chips li {
+    background: #eef1f4;
+    color: var(--color-navy);
+    border-radius: 12px;
+    padding: 2px var(--space-3);
+    font-size: var(--text-xs);
+  }
+
+  @media (min-width: 640px) {
+    .fact-sheet {
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+  }
+</style>

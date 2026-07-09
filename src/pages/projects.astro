@@ -2,19 +2,28 @@
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
-const projects = (await getCollection('projects')).sort(
-  (a, b) => b.data.year - a.data.year || a.data.title.localeCompare(b.data.title)
+function sortYear(years: string): number {
+  const matches = years.match(/\d{4}/g);
+  if (!matches) return 0;
+  return years.includes('present') ? 9999 : Number(matches[matches.length - 1]);
+}
+
+const institutions = await getCollection('institutions');
+const instName = (id: string) => institutions.find((i) => i.id === id)?.data.name ?? id;
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
+  (a, b) => sortYear(b.data.years) - sortYear(a.data.years) || a.data.title.localeCompare(b.data.title)
 );
 ---
 
 <Layout
-  title="Projects | DataSquad International"
-  description="Cross-institution work and outputs produced by DataSquad student analysts across the network."
+  title="Examples | DataSquad International"
+  description="Real work produced by DataSquad student analysts across the network, from data cleaning and 3D scanning to published research."
 >
   <section class="hero">
     <div class="inner">
       <p class="eyebrow">Student work</p>
-      <h1>Projects</h1>
+      <h1>Examples</h1>
       <p class="lede">
         Cross-institution work and outputs produced by DataSquad student analysts.
       </p>
@@ -34,26 +43,44 @@ const projects = (await getCollection('projects')).sort(
       </div>
     ) : (
       <ul class="cards">
-        {projects.map((p) => (
-          <li class="card">
-            <div class="meta">
-              <span class="year">{p.data.year}</span>
-              {p.data.institutions.map((inst) => <span class="inst">{inst}</span>)}
-            </div>
-            <h2>
-              {p.data.url ? (
-                <a href={p.data.url} target="_blank" rel="noopener">{p.data.title} ↗</a>
-              ) : p.data.title}
-            </h2>
-            <p class="desc">{p.data.description}</p>
-            {p.data.contributors.length > 0 && (
-              <p class="by">By {p.data.contributors.join(', ')}</p>
-            )}
-            {p.data.tags.length > 0 && (
-              <ul class="tags">{p.data.tags.map((t) => <li>{t}</li>)}</ul>
-            )}
-          </li>
-        ))}
+        {projects.map((p) => {
+          const href = p.data.url ?? `/projects/${p.id}`;
+          const external = Boolean(p.data.url);
+          return (
+            <li class="card">
+              {p.data.heroImage && (
+                <a
+                  href={href}
+                  target={external ? '_blank' : undefined}
+                  rel={external ? 'noopener' : undefined}
+                  class="thumb-link"
+                  aria-hidden="true"
+                  tabindex="-1"
+                >
+                  <img src={p.data.heroImage} alt="" loading="lazy" class="thumb" />
+                </a>
+              )}
+              <div class="card-body">
+                <div class="meta">
+                  <span class="years">{p.data.years}</span>
+                  {p.data.institutions.map((inst) => <span class="inst">{instName(inst)}</span>)}
+                </div>
+                <h2>
+                  <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>
+                    {p.data.title}{external && ' ↗'}
+                  </a>
+                </h2>
+                <p class="desc">{p.data.description}</p>
+                {p.data.team.length > 0 && (
+                  <p class="by">By {p.data.team.join(', ')}</p>
+                )}
+                {p.data.category.length > 0 && (
+                  <ul class="tags">{p.data.category.map((t) => <li>{t}</li>)}</ul>
+                )}
+              </div>
+            </li>
+          );
+        })}
       </ul>
     )}
   </section>
@@ -81,10 +108,17 @@ const projects = (await getCollection('projects')).sort(
   }
   .card {
     background: var(--color-white); border: 1px solid #e3e6ea;
-    border-top: 3px solid var(--color-steel); border-radius: 0 0 8px 8px; padding: var(--space-6);
+    border-top: 3px solid var(--color-steel); border-radius: 0 0 8px 8px;
+    overflow: hidden; display: flex; flex-direction: column;
   }
+  .thumb-link { display: block; }
+  .thumb {
+    width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block;
+    background: var(--color-canvas);
+  }
+  .card-body { padding: var(--space-6); }
   .meta { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; margin-bottom: var(--space-2); }
-  .year { color: var(--color-link); font-weight: 700; font-size: var(--text-sm); }
+  .years { color: var(--color-link); font-weight: 700; font-size: var(--text-sm); }
   .inst { color: var(--color-muted); font-size: var(--text-xs); }
   .card h2 { margin: 0 0 var(--space-2); font-size: var(--text-xl); }
   .card h2 a { text-decoration: none; color: var(--color-navy); }
