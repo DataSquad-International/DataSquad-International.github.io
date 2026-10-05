@@ -1,34 +1,21 @@
 ---
-title: "ITS Survey Analysis"
-description: "Using the Edward Tufte approach of “small multiples” we designed an efficient visualization of more than 30 question pairs related to respondents' satisfaction with a…"
+title: "Visualizing the MISO survey of technology services"
+description: "Small-multiple charts of more than 30 question pairs on how faculty, staff and students rate the college's technology services, with a cleaner way to link services to departments."
 institutions: ["carleton"]
 status: past
+years: "2019"
 partner: "ITS"
 partnerType: "campus-operations"
-category: ["Analysis & modeling"]
+team: ["Nobuaki Masaki"]
+tools: ["R"]
+category: ["Analysis & modeling", "Visualization & reporting"]
 heroImage: "/img/projects/carleton-its-survey-analysis.png"
-heroImageAlt: "Screenshot from the ITS Survey Analysis project"
-sourceUrl: "https://carletondatasquad.bitbucket.io/pastproj.html"
+heroImageAlt: "Screenshot from the MISO survey visualization project"
+sourceUrl: "https://www.carleton.edu/its/blog/visualizing-miso-survey-data/"
 ---
 
-Using the Edward Tufte approach of “small multiples” we
-designed an efficient visualization of more than 30 question
-pairs related to respondents' satisfaction with a series of
-services combined with how important that service is to
-them. A visualization with small multiples (“fascets” in R)
-dramatically speeds up survey interpretation from scanning
-60 individual and disconnected questions to very quickly
-focus on the services which are most important in the
-delivery of their work - on one screen. It also allows
-simple identification of the individuals who are frustrated
-(low satisfaction in services with high-importance). Are
-there patterns in who these people are? e.g. For a question
-pair on faculty satisfaction/importance with classroom
-computing, are these frustrated individuals who have been
-teaching in the same building or specific classroom? Or with
-specific software/hardware needs? Or, if there are
-consistent patterns in who is identified as dissatisfied,
-are they also passionately satisfied in other areas? Are
-these people exhibiting strong opinions and thus are great
-to tap into for what aspects that identify excellent
-service?
+The Measuring Information Service Outcomes (MISO) survey asks faculty, staff and students how satisfied they are with the college's technology services. Using Edward Tufte's approach of small multiples, the DataSquad designed an efficient visualization of more than 30 question pairs about those ratings.
+
+Nobuaki Masaki took the project over from another DataSquad member, so he started by reviewing the documentation in the unfinished R code that cleaned the data. One part assigned each of more than 20 services to a department (ITS, the Library, and others) with two hand-written lists matched by position. That is easy to follow but leaves room for human error, makes it hard to confirm every service was counted, and, because the lists would need redefining for each new survey, hides where the relationship lives in the project.
+
+His version loads a separate relationship file that matches services to departments and joins it to the data. The code is slightly harder to read, but the file can be found and edited for later surveys, and it makes it easier to check that every service is accounted for.

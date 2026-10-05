@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import StructuredData from '../components/StructuredData.astro';
 import { getCollection } from 'astro:content';
 import consultations from '../data/consultations.json';
-import { PROJECT_CATEGORIES, PARTNER_TYPES, PARTNER_TYPE_PHRASE } from '../lib/project-vocab';
+import { PROJECT_CATEGORIES, PARTNER_TYPES } from '../lib/project-vocab';
 
 function sortYear(years?: string): number {
   if (!years) return 0;
@@ -16,7 +16,6 @@ const institutions = (await getCollection('institutions'))
   .filter((i) => i.data.active)
   .sort((a, b) => a.data.name.localeCompare(b.data.name));
 const instName = (id: string) => institutions.find((i) => i.id === id)?.data.name ?? id;
-const instColor = (id: string) => institutions.find((i) => i.id === id)?.data.brand_color;
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
   (a, b) =>
@@ -25,31 +24,28 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
     a.data.title.localeCompare(b.data.title)
 );
 
-// Matrix: one row per shared category, one column per institution. A project
-// with two categories shows up in both rows.
-const anyLogged = projects.some((p) => p.data.selection === 'logged');
-
-const rows = PROJECT_CATEGORIES.map((category) => ({
-  category,
-  cells: institutions.map((inst) =>
-    projects.filter(
-      (p) => p.data.category.includes(category) && p.data.institutions.includes(inst.id)
-    )
-  ),
-})).filter((r) => r.cells.some((c) => c.length > 0));
-
-// "Carleton: 8 for campus offices, 4 for researchers."
-const partnerSummary = institutions.map((inst) => {
-  const mine = projects.filter((p) => p.data.institutions.includes(inst.id));
-  const parts = PARTNER_TYPES.map((t) => ({
-    n: mine.filter((p) => p.data.partnerType === t).length,
-    phrase: PARTNER_TYPE_PHRASE[t],
-  }))
-    .filter((x) => x.n > 0)
-    .sort((a, b) => b.n - a.n)
-    .map((x) => `${x.n} ${x.phrase}`);
-  return { name: inst.data.name, total: mine.length, parts };
-});
+// Filter choices, each with how many projects it would show.
+const programOptions = institutions.map((i) => ({
+  value: i.id,
+  label: i.data.name,
+  n: projects.filter((p) => p.data.institutions.includes(i.id)).length,
+}));
+const workOptions = PROJECT_CATEGORIES.map((c) => ({
+  value: c as string,
+  label: c as string,
+  n: projects.filter((p) => (p.data.category as string[]).includes(c)).length,
+})).filter((o) => o.n > 0);
+const forLabel: Record<string, string> = {
+  research: 'Researchers',
+  instruction: 'Courses and instructors',
+  'campus-operations': 'Campus offices',
+  internal: 'The program itself',
+};
+const forOptions = PARTNER_TYPES.map((t) => ({
+  value: t as string,
+  label: forLabel[t],
+  n: projects.filter((p) => p.data.partnerType === t).length,
+})).filter((o) => o.n > 0);
 
 const records = consultations.programs.map((p) => ({
   name: instName(p.institution),
@@ -77,7 +73,7 @@ const itemList = {
 
 <Layout
   title="Examples | DataSquad International"
-  description="What DataSquad student analysts have built at member institutions, sorted by the kind of work and who it was for."
+  description="What DataSquad student analysts have built at member institutions, with filters for the kind of work and who it was for."
 >
   <StructuredData slot="head" schema={itemList} />
 
@@ -85,8 +81,9 @@ const itemList = {
     <div class="inner">
       <h1>Examples</h1>
       <p class="lede">
-        {projects.length} projects from {institutions.length} programs, sorted by
-        the kind of work and who it was for.
+        {projects.length} projects from {institutions.length} programs. Carleton
+        started the DataSquad model, so it has the longer record: its program is
+        older and has had more students.
       </p>
     </div>
   </section>
@@ -105,122 +102,56 @@ const itemList = {
     </section>
   ) : (
     <>
-      <section class="wrap matrix-section" aria-labelledby="matrix-h">
-        <h2 id="matrix-h">What each program has worked on</h2>
-        <p class="note">
-          One square is one project. Select a square to jump to it. Projects
-          with two kinds of work appear in both rows.
-          {anyLogged && ' A filled square is a written-up example; an open square is an entry from the program\u2019s complete record.'}
-        </p>
-        <p class="note">
-          Carleton started the DataSquad model, and Paula Lackie's program has
-          been documenting its projects for years. UCLA's entries come from its
-          published write-ups and blog posts, so neither list is a full count of
-          what either program has done. The shared categories come from sorting
-          both programs' work together.
-        </p>
-
-        <table class="matrix">
-          <thead>
-            <tr>
-              <th scope="col"><span class="vh">Kind of work</span></th>
-              {institutions.map((inst) => (
-                <th scope="col" style={`--accent: ${inst.data.brand_color ?? 'var(--color-steel)'}`}>
-                  {inst.data.name}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr>
-                <th scope="row">{row.category}</th>
-                {row.cells.map((cell) => (
-                  <td>
-                    {cell.length > 0 ? (
-                      <ul class="marks">
-                        {cell.map((p) => (
-                          <li>
-                            <a class:list={['mark', { logged: p.data.selection === 'logged' }]} href={`#p-${p.id}`} title={p.data.title}>
-                              <span class="vh">{p.data.title}</span>
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <span class="none"><span class="vh">No projects</span></span>
-                    )}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <dl class="partners">
-          {partnerSummary.map((s) => (
-            <div>
-              <dt>{s.name}</dt>
-              <dd>{s.total} projects: {s.parts.join(', ')}.</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      <section class="wrap" aria-labelledby="behind-h">
-        <h2 id="behind-h">How much work is behind these examples</h2>
-        <p class="note">
-          The examples are a selection. Each program keeps a fuller record of its
-          consultations, and this is what UCLA's shows.
-        </p>
-        {records.map((r) => (
-          <div class="record">
-            <h3>{r.name}</h3>
-            <table class="years">
-              <caption>
-                About {r.notes.total} {r.notes.label}, by year
-              </caption>
-              <thead>
-                <tr><th scope="col">Year</th><th scope="col">Notes</th><th scope="col"><span class="vh">Relative size</span></th></tr>
-              </thead>
-              <tbody>
-                {r.notes.byYear.map((y) => (
-                  <tr>
-                    <th scope="row">{y.year}</th>
-                    <td>about {y.count}{y.partial && ` (${y.partial})`}</td>
-                    <td aria-hidden="true"><span class="bar" style={`--w: ${(y.count / r.max) * 100}%`}></span></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <p class="line">
-              {r.board.label}: {r.board.total}, of which
-              {' '}{r.board.status.map((s) => `${s.count} ${s.label}`).join(', ')}.
-              Some 2025 projects appear in both records, so the two counts overlap
-              and shouldn't be added together.
-            </p>
-            <p class="line">
-              Requests that recur: {r.topics.join(', ')}.
-            </p>
+      <section class="wrap filters-section" aria-labelledby="filters-h">
+        <h2 id="filters-h" class="vh">Filter the examples</h2>
+        <!-- Shown by script; without it the full list below is simply unfiltered. -->
+        <div class="filters" id="filters" role="group" aria-labelledby="filters-h" hidden>
+          <div class="field">
+            <label for="f-program">Program</label>
+            <select id="f-program" name="program">
+              <option value="">All programs</option>
+              {programOptions.map((o) => <option value={o.value}>{o.label} ({o.n})</option>)}
+            </select>
           </div>
-        ))}
-        <p class="note small">
-          We don't have Carleton's equivalent counts on the site yet. Counts are
-          approximate, tallied from file titles and dates. Individual consultations
-          are confidential, so none are listed.
+          <div class="field">
+            <label for="f-work">Kind of work</label>
+            <select id="f-work" name="work">
+              <option value="">All kinds of work</option>
+              {workOptions.map((o) => <option value={o.value}>{o.label} ({o.n})</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-for">Who it was for</label>
+            <select id="f-for" name="for">
+              <option value="">Anyone</option>
+              {forOptions.map((o) => <option value={o.value}>{o.label} ({o.n})</option>)}
+            </select>
+          </div>
+          <button type="button" class="clear" id="clear" hidden>Clear filters</button>
+        </div>
+        <p class="count" id="count" role="status" aria-live="polite" hidden>
+          Showing <span id="shown">{projects.length}</span> of {projects.length} projects.
+        </p>
+        <p class="none" id="none" hidden>
+          No projects match those filters. Try clearing one of them.
         </p>
       </section>
 
-      <section class="wrap" aria-labelledby="list-h">
+      <section class="wrap list-section" aria-labelledby="list-h">
         <h2 id="list-h" class="vh">All projects</h2>
-        <ol class="ledger">
+        <ol class="ledger" id="ledger">
           {projects.map((p) => {
             const href = p.data.url ?? `/projects/${p.id}`;
             const external = Boolean(p.data.url);
-            const accent = instColor(p.data.institutions[0]);
             const when = p.data.status === 'current' ? 'Current' : p.data.years;
             return (
-              <li class="row" id={`p-${p.id}`} style={accent ? `--accent: ${accent}` : undefined}>
+              <li
+                class="row"
+                id={`p-${p.id}`}
+                data-program={p.data.institutions.join(' ')}
+                data-work={p.data.category.join('|')}
+                data-for={p.data.partnerType ?? ''}
+              >
                 {p.data.heroImage ? (
                   <img src={p.data.heroImage} alt="" loading="lazy" class="thumb" />
                 ) : (
@@ -279,20 +210,121 @@ const itemList = {
           })}
         </ol>
       </section>
+
+      <section class="wrap behind" aria-labelledby="behind-h">
+        <h2 id="behind-h">How much work is behind these examples</h2>
+        <p class="note">
+          The examples are a selection. Each program keeps a fuller record of its
+          consultations, and this is what UCLA's shows.
+        </p>
+        {records.map((r) => (
+          <div class="record">
+            <h3>{r.name}</h3>
+            <table class="years">
+              <caption>
+                About {r.notes.total} {r.notes.label}, by year
+              </caption>
+              <thead>
+                <tr><th scope="col">Year</th><th scope="col">Notes</th><th scope="col"><span class="vh">Relative size</span></th></tr>
+              </thead>
+              <tbody>
+                {r.notes.byYear.map((y) => (
+                  <tr>
+                    <th scope="row">{y.year}</th>
+                    <td>about {y.count}{y.partial && ` (${y.partial})`}</td>
+                    <td aria-hidden="true"><span class="bar" style={`--w: ${(y.count / r.max) * 100}%`}></span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p class="line">
+              {r.board.label}: {r.board.total}, of which
+              {' '}{r.board.status.map((s) => `${s.count} ${s.label}`).join(', ')}.
+              Some 2025 projects appear in both records, so the two counts overlap
+              and shouldn't be added together.
+            </p>
+            <p class="line">
+              Requests that recur: {r.topics.join(', ')}.
+            </p>
+          </div>
+        ))}
+        <p class="note small">
+          We don't have Carleton's equivalent counts on the site yet. Counts are
+          approximate, tallied from file titles and dates. Individual consultations
+          are confidential, so none are listed.
+        </p>
+      </section>
     </>
   )}
 </Layout>
+
+<script>
+  // Progressive enhancement: filter the list by program, kind of work and who it
+  // was for. Choices live in the URL (?program=&work=&for=) so a filtered view can
+  // be shared or put behind a QR code.
+  const form = document.getElementById('filters');
+  if (form) {
+    const rows = Array.from(document.querySelectorAll<HTMLElement>('#ledger .row'));
+    const count = document.getElementById('count')!;
+    const shown = document.getElementById('shown')!;
+    const none = document.getElementById('none')!;
+    const clear = document.getElementById('clear')!;
+    const program = document.getElementById('f-program') as HTMLSelectElement;
+    const work = document.getElementById('f-work') as HTMLSelectElement;
+    const forWho = document.getElementById('f-for') as HTMLSelectElement;
+
+    const params = new URLSearchParams(location.search);
+    for (const [name, el] of [['program', program], ['work', work], ['for', forWho]] as const) {
+      const v = params.get(name);
+      if (v && Array.from(el.options).some((o) => o.value === v)) el.value = v;
+    }
+
+    const apply = () => {
+      let n = 0;
+      for (const row of rows) {
+        const ok =
+          (!program.value || (row.dataset.program ?? '').split(' ').includes(program.value)) &&
+          (!work.value || (row.dataset.work ?? '').split('|').includes(work.value)) &&
+          (!forWho.value || row.dataset.for === forWho.value);
+        row.hidden = !ok;
+        if (ok) n++;
+      }
+      shown.textContent = String(n);
+      none.hidden = n !== 0;
+      const filtered = Boolean(program.value || work.value || forWho.value);
+      clear.hidden = !filtered;
+      const next = new URLSearchParams();
+      if (program.value) next.set('program', program.value);
+      if (work.value) next.set('work', work.value);
+      if (forWho.value) next.set('for', forWho.value);
+      const qs = next.toString();
+      history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+    };
+
+    form.addEventListener('change', apply);
+    clear.addEventListener('click', () => {
+      program.value = work.value = forWho.value = '';
+      apply();
+      program.focus();
+    });
+
+    form.hidden = false;
+    count.hidden = false;
+    apply();
+  }
+</script>
 
 <style>
   .hero { background: var(--color-navy); color: var(--color-white); }
   .hero .inner { max-width: var(--max-width); margin: 0 auto; padding: var(--space-12) var(--space-6); }
   .hero h1 { margin: 0 0 var(--space-3); color: var(--color-white); font-size: var(--text-4xl); }
-  .lede { margin: 0; font-size: var(--text-lg); color: #cdd6e3; max-width: 52ch; }
+  .lede { margin: 0; font-size: var(--text-lg); color: #cdd6e3; max-width: 56ch; }
 
-  .wrap { max-width: var(--max-width); margin: 0 auto; padding: var(--space-12) var(--space-6) 0; }
-  .wrap:last-of-type { padding-bottom: var(--space-16); }
+  .wrap { max-width: var(--max-width); margin: 0 auto; padding: var(--space-8) var(--space-6) 0; }
   .wrap h2 { margin: 0 0 var(--space-2); font-size: var(--text-2xl); color: var(--color-navy); }
   .note { margin: 0 0 var(--space-4); color: var(--color-muted); max-width: 62ch; }
+  .list-section { padding-top: var(--space-4); }
+  .behind { padding-top: var(--space-16); padding-bottom: var(--space-16); }
 
   .vh {
     position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
@@ -304,46 +336,31 @@ const itemList = {
   .empty .small { font-size: var(--text-base); color: var(--color-muted); }
   .empty a { color: var(--color-link); font-weight: 700; }
 
-  /* Matrix */
-  .matrix { width: 100%; border-collapse: collapse; }
-  .matrix thead th {
-    text-align: left; font-size: var(--text-base); color: var(--color-navy);
-    padding: 0 var(--space-4) var(--space-3) 0;
-    border-bottom: 3px solid var(--accent, var(--color-steel));
+  /* Filters */
+  .filters-section { padding-bottom: 0; }
+  .filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-4) var(--space-6); }
+  .filters[hidden], .count[hidden], .none[hidden], .clear[hidden] { display: none; }
+  .field { display: grid; gap: var(--space-1); min-width: 0; flex: 1 1 17rem; max-width: 24rem; }
+  .field label { font-size: var(--text-sm); font-weight: 700; color: var(--color-navy); }
+  .field select {
+    width: 100%; min-width: 0; font: inherit; padding: var(--space-2) var(--space-3); color: var(--color-slate);
+    background: var(--color-white); border: 1px solid #9aa4b0; border-radius: 4px;
   }
-  .matrix thead th:first-child { border-bottom-color: transparent; }
-  .matrix tbody th {
-    text-align: left; font-weight: 400; font-size: var(--text-sm);
-    padding: var(--space-3) var(--space-4) var(--space-3) 0; width: 36%;
-    color: var(--color-slate);
+  .field select:focus-visible, .clear:focus-visible { outline: 3px solid var(--color-orange); outline-offset: 2px; }
+  .clear {
+    font: inherit; background: none; border: 0; padding: var(--space-2) 0; cursor: pointer;
+    color: var(--color-link); font-weight: 700; text-decoration: underline; text-underline-offset: 3px;
   }
-  .matrix td { padding: var(--space-3) var(--space-4) var(--space-3) 0; vertical-align: middle; }
-  .matrix tbody tr { border-bottom: 1px solid #e3e6ea; }
-  .marks { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-  .mark {
-    display: block; width: 18px; height: 18px; background: var(--color-navy);
-    border-radius: 2px;
-  }
-  .mark.logged { background: transparent; box-shadow: inset 0 0 0 2px var(--color-navy); }
-  .mark:hover { background: var(--color-link); }
-  .mark.logged:hover { background: var(--color-link); box-shadow: none; }
-  .mark:focus-visible { outline: 3px solid var(--color-orange); outline-offset: 2px; }
-  .none { display: block; width: 18px; border-top: 2px solid #c9ced4; }
-
-  .partners { margin: var(--space-6) 0 0; display: grid; gap: var(--space-2); }
-  .partners div { display: flex; flex-wrap: wrap; gap: var(--space-2); font-size: var(--text-sm); }
-  .partners dt { font-weight: 700; color: var(--color-navy); }
-  .partners dd { margin: 0; color: #555; }
+  .count { margin: var(--space-4) 0 0; color: #444; font-size: var(--text-sm); }
+  .none { margin: var(--space-4) 0 0; color: #444; }
 
   /* Ledger */
-  .ledger { list-style: none; margin: var(--space-12) 0 0; padding: 0; }
+  .ledger { list-style: none; margin: var(--space-6) 0 0; padding: 0; }
   .row {
     display: grid; grid-template-columns: 9rem 1fr; gap: var(--space-6);
-    padding: var(--space-6) 0;
-    border-top: 1px solid #e3e6ea;
-    scroll-margin-top: var(--space-6);
+    padding: var(--space-6) 0; border-top: 1px solid #e3e6ea;
   }
-  .row:target { background: #fff6e0; }
+  .row[hidden] { display: none; }
   .thumb { width: 9rem; height: 6.5rem; object-fit: cover; border-radius: 2px; background: #eef1f4; }
   .thumb.blank { background: #eef1f4; }
   .body { max-width: 68ch; }
@@ -355,7 +372,6 @@ const itemList = {
   .facts div { display: grid; grid-template-columns: 5.5rem 1fr; gap: var(--space-2); }
   .facts dt { color: var(--color-muted); }
   .facts dd { margin: 0; color: var(--color-slate); }
-
 
   /* Behind the examples */
   .record { margin-top: var(--space-6); max-width: 68ch; }
@@ -373,6 +389,6 @@ const itemList = {
   @media (max-width: 640px) {
     .row { grid-template-columns: 1fr; gap: var(--space-3); }
     .thumb { width: 100%; height: 9rem; }
-    .matrix tbody th { width: 44%; }
+    .field { max-width: none; }
   }
 </style>
