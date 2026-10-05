@@ -8,7 +8,7 @@ category: ["Data management & infrastructure"]
 partnerType: "research"
 heroImage: "/img/projects/voter-file-hero.jpg"
 heroImageAlt: "Hand touching a voting machine screen showing presidential candidates"
-sourceUrl: "https://ucla-datasquad.github.io/#portfolio"
+sourceUrl: "https://ucla-datasquad.github.io/#p15"
 ---
 
 When UCLA acquired a 10TB national voter file from L2, it arrived as thousands of fragmented, state-level files, too large and inconsistent to use locally.

@@ -10,7 +10,7 @@ partnerType: "internal"
 partner: "DataSquad International"
 heroImage: "/img/projects/dsi-tableau-obstacles.png"
 heroImageAlt: "Dashboard visualizing the relationship between obstacle rank, Data Support Services status, and location"
-sourceUrl: "https://ucla-datasquad.github.io/#portfolio"
+sourceUrl: "https://ucla-datasquad.github.io/#p17"
 ---
 
 One of the most useful things a DataSquad member can bring to a project is being open to work outside their comfort zone. That was the case when Norman Powell Data Science Consultant Will Foote took on a Tableau project for DataSquad International, the nascent global organizing group for the network, despite not being the most experienced person on the team in Tableau.

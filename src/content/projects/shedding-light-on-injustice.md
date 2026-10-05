@@ -13,7 +13,7 @@ heroImageAlt: "Cover of The Coroner's Silence by Terence Keel"
 quote:
   text: "The UCLA DataSquad is one of the most impactful resources I've engaged with at UCLA."
   attribution: "Grace Sosa, Biocritical Lab manager"
-sourceUrl: "https://ucla-datasquad.github.io/#portfolio"
+sourceUrl: "https://ucla-datasquad.github.io/#p14"
 ---
 
 Professor Terence Keel and the [Biocritical Studies Lab](https://www.terencekeel.com/research) have been building a comprehensive dataset of deaths in custody across the United States from 2000 to 2020, integrating records from Fatal Encounters, The Guardian, Reuters, the LA Times Homicide Report, and the Bureau of Justice Statistics. The UCLA DataSquad supported this work continuously from 2021 through 2025, across four cohorts of consultants.

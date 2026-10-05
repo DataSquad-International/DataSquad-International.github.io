@@ -13,10 +13,10 @@ heroImageAlt: "LAPD helicopter in flight over Los Angeles"
 quote:
   text: "This work wouldn't have happened without the DSC team. You supported us through technical assistance, helped one of my students grow her R skills, and hosted the R server that made this research possible. This project became one of the crown jewels of South Campus' community-engaged work."
   attribution: "Dr. Nicholas Shapiro, UCLA Institute for Society and Genetics"
-sourceUrl: "https://ucla-datasquad.github.io/#portfolio"
+sourceUrl: "https://ucla-datasquad.github.io/#p12"
 ---
 
-Dr. Nicholas Shapiro and the Carceral Ecologies Lab came to the Data Science Center needing to work with large datasets tracking LAPD helicopter surveillance flights. The data was too large to load and analyze efficiently: initial load times ran around 318 minutes.
+Dr. Nicholas Shapiro and the [Carceral Ecologies Lab](https://carceralecologies.org/) came to the Data Science Center needing to work with large datasets tracking LAPD helicopter surveillance flights. The data was too large to load and analyze efficiently: initial load times ran around 318 minutes.
 
 DataSquad members Lawrence Lee and Madeline Kim collaborated with DSC staff to engineer a solution in R that brought load times down to roughly 2 minutes, a 99% reduction.
 
