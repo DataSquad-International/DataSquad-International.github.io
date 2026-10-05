@@ -79,6 +79,65 @@ body:
         - label: Resources & templates to get started
         - label: To be connected with a similar institution
         - label: Just keeping us on your radar for now
+  - type: checkboxes
+    id: first_work
+    attributes:
+      label: What kinds of work might students do first?
+      description: Pick any that fit. This helps us point you to examples and to a program doing similar work. The list is the network's shared vocabulary, see https://datasquad.info/projects.
+      options:
+        - label: Visualization and reporting
+        - label: Data collection and scraping
+        - label: Data cleaning and integration
+        - label: Analysis and modeling
+        - label: Tools and automation
+        - label: Reproducibility and code migration
+        - label: Data management and infrastructure
+        - label: Digitization and heritage
+        - label: Teaching and training
+        - label: Not sure yet
+  - type: checkboxes
+    id: serves
+    attributes:
+      label: Who would the first projects be for?
+      options:
+        - label: Researchers (faculty, graduate students)
+        - label: Courses and instructors
+        - label: Campus offices (admissions, career center, IT, library)
+        - label: The program itself
+  - type: dropdown
+    id: supervision
+    attributes:
+      label: Who would supervise students?
+      description: Supervising students is the part most people worry about. An honest answer helps us help you.
+      options:
+        - A staff member with time set aside for it
+        - A staff member, shared with other duties
+        - Not decided yet
+        - I'd like to talk about how others do it
+    validations:
+      required: false
+  - type: dropdown
+    id: pay
+    attributes:
+      label: How might students be paid or credited?
+      options:
+        - Hourly student jobs
+        - Work-study
+        - Academic credit or an internship
+        - Grant or gift funded
+        - Not decided yet
+    validations:
+      required: false
+  - type: dropdown
+    id: timeline
+    attributes:
+      label: When might you start?
+      options:
+        - Next term
+        - Within a year
+        - Just exploring for now
+    validations:
+      required: false
   - type: input
     id: heard
     attributes:
