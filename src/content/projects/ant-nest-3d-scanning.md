@@ -5,7 +5,9 @@ institutions: ["ucla"]
 team: ["Doug Daniels"]
 years: "2021"
 tools: ["3D Scanning"]
-category: ["Data Science Center", "3D Digitization"]
+category: ["Digitization & heritage"]
+partnerType: "research"
+partner: "Ecology and Evolutionary Biology"
 heroImage: "/img/projects/ant-nest-hero.png"
 heroImageAlt: "3D representation of an ant nest, with broken segments shown in different colors"
 sourceUrl: "https://ucla-datasquad.github.io/portfolio/08-ant-nests/"

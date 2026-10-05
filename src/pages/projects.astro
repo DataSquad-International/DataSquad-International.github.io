@@ -1,37 +1,96 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import StructuredData from '../components/StructuredData.astro';
 import { getCollection } from 'astro:content';
+import consultations from '../data/consultations.json';
+import { PROJECT_CATEGORIES, PARTNER_TYPES, PARTNER_TYPE_PHRASE } from '../lib/project-vocab';
 
-function sortYear(years: string): number {
+function sortYear(years?: string): number {
+  if (!years) return 0;
   const matches = years.match(/\d{4}/g);
   if (!matches) return 0;
   return years.includes('present') ? 9999 : Number(matches[matches.length - 1]);
 }
 
-const institutions = await getCollection('institutions');
+const institutions = (await getCollection('institutions'))
+  .filter((i) => i.data.active)
+  .sort((a, b) => a.data.name.localeCompare(b.data.name));
 const instName = (id: string) => institutions.find((i) => i.id === id)?.data.name ?? id;
+const instColor = (id: string) => institutions.find((i) => i.id === id)?.data.brand_color;
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
-  (a, b) => sortYear(b.data.years) - sortYear(a.data.years) || a.data.title.localeCompare(b.data.title)
+  (a, b) =>
+    Number(b.data.status === 'current') - Number(a.data.status === 'current') ||
+    sortYear(b.data.years) - sortYear(a.data.years) ||
+    a.data.title.localeCompare(b.data.title)
 );
+
+// Matrix: one row per shared category, one column per institution. A project
+// with two categories shows up in both rows.
+const rows = PROJECT_CATEGORIES.map((category) => ({
+  category,
+  cells: institutions.map((inst) =>
+    projects.filter(
+      (p) => p.data.category.includes(category) && p.data.institutions.includes(inst.id)
+    )
+  ),
+})).filter((r) => r.cells.some((c) => c.length > 0));
+
+// "Carleton: 8 for campus offices, 4 for researchers."
+const partnerSummary = institutions.map((inst) => {
+  const mine = projects.filter((p) => p.data.institutions.includes(inst.id));
+  const parts = PARTNER_TYPES.map((t) => ({
+    n: mine.filter((p) => p.data.partnerType === t).length,
+    phrase: PARTNER_TYPE_PHRASE[t],
+  }))
+    .filter((x) => x.n > 0)
+    .sort((a, b) => b.n - a.n)
+    .map((x) => `${x.n} ${x.phrase}`);
+  return { name: inst.data.name, total: mine.length, parts };
+});
+
+const records = consultations.programs.map((p) => ({
+  name: instName(p.institution),
+  ...p,
+  max: Math.max(...p.notes.byYear.map((y) => y.count)),
+}));
+
+const site = Astro.site ?? new URL('https://datasquad.info');
+const itemList = {
+  '@type': 'CollectionPage',
+  name: 'DataSquad examples',
+  url: new URL('/projects', site).href,
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: projects.length,
+    itemListElement: projects.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: p.data.url ?? new URL(`/projects/${p.id}`, site).href,
+      name: p.data.title,
+    })),
+  },
+};
 ---
 
 <Layout
   title="Examples | DataSquad International"
-  description="Real work produced by DataSquad student analysts across the network, from data cleaning and 3D scanning to published research."
+  description="What DataSquad student analysts have built at member institutions, sorted by the kind of work and who it was for."
 >
+  <StructuredData slot="head" schema={itemList} />
+
   <section class="hero">
     <div class="inner">
-      <p class="eyebrow">Student work</p>
       <h1>Examples</h1>
       <p class="lede">
-        Cross-institution work and outputs produced by DataSquad student analysts.
+        {projects.length} projects from {institutions.length} programs, sorted by
+        the kind of work and who it was for.
       </p>
     </div>
   </section>
 
-  <section class="section">
-    {projects.length === 0 ? (
+  {projects.length === 0 ? (
+    <section class="wrap">
       <div class="empty">
         <p>
           We're collecting standout work from across the network. In the meantime,
@@ -41,92 +100,268 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
           Run a DataSquad and have work to feature? <a href="/contact">Get in touch</a>.
         </p>
       </div>
-    ) : (
-      <ul class="cards">
-        {projects.map((p) => {
-          const href = p.data.url ?? `/projects/${p.id}`;
-          const external = Boolean(p.data.url);
-          return (
-            <li class="card">
-              {p.data.heroImage && (
-                <a
-                  href={href}
-                  target={external ? '_blank' : undefined}
-                  rel={external ? 'noopener' : undefined}
-                  class="thumb-link"
-                  aria-hidden="true"
-                  tabindex="-1"
-                >
+    </section>
+  ) : (
+    <>
+      <section class="wrap matrix-section" aria-labelledby="matrix-h">
+        <h2 id="matrix-h">What each program has worked on</h2>
+        <p class="note">
+          One square is one project. Select a square to jump to it. Projects
+          with two kinds of work appear in both rows.
+        </p>
+        <p class="note">
+          Carleton started the DataSquad model, and Paula Lackie's program has
+          been documenting its projects for years. UCLA's entries come from its
+          published write-ups and blog posts, so neither list is a full count of
+          what either program has done. The shared categories come from sorting
+          both programs' work together.
+        </p>
+
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th scope="col"><span class="vh">Kind of work</span></th>
+              {institutions.map((inst) => (
+                <th scope="col" style={`--accent: ${inst.data.brand_color ?? 'var(--color-steel)'}`}>
+                  {inst.data.name}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr>
+                <th scope="row">{row.category}</th>
+                {row.cells.map((cell) => (
+                  <td>
+                    {cell.length > 0 ? (
+                      <ul class="marks">
+                        {cell.map((p) => (
+                          <li>
+                            <a class="mark" href={`#p-${p.id}`} title={p.data.title}>
+                              <span class="vh">{p.data.title}</span>
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <span class="none"><span class="vh">No projects</span></span>
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <dl class="partners">
+          {partnerSummary.map((s) => (
+            <div>
+              <dt>{s.name}</dt>
+              <dd>{s.total} projects: {s.parts.join(', ')}.</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <section class="wrap" aria-labelledby="behind-h">
+        <h2 id="behind-h">How much work is behind these examples</h2>
+        <p class="note">
+          The examples are a selection. Each program keeps a fuller record of its
+          consultations, and this is what UCLA's shows.
+        </p>
+        {records.map((r) => (
+          <div class="record">
+            <h3>{r.name}</h3>
+            <table class="years">
+              <caption>
+                About {r.notes.total} {r.notes.label}, by year
+              </caption>
+              <thead>
+                <tr><th scope="col">Year</th><th scope="col">Notes</th><th scope="col"><span class="vh">Relative size</span></th></tr>
+              </thead>
+              <tbody>
+                {r.notes.byYear.map((y) => (
+                  <tr>
+                    <th scope="row">{y.year}</th>
+                    <td>about {y.count}{y.partial && ` (${y.partial})`}</td>
+                    <td aria-hidden="true"><span class="bar" style={`--w: ${(y.count / r.max) * 100}%`}></span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p class="line">
+              {r.board.label}: {r.board.total}, of which
+              {' '}{r.board.status.map((s) => `${s.count} ${s.label}`).join(', ')}.
+              Some 2025 projects appear in both records, so the two counts overlap
+              and shouldn't be added together.
+            </p>
+            <p class="line">
+              Requests that recur: {r.topics.join(', ')}.
+            </p>
+          </div>
+        ))}
+        <p class="note small">
+          We don't have Carleton's equivalent counts on the site yet. Counts are
+          approximate, tallied from file titles and dates. Individual consultations
+          are confidential, so none are listed.
+        </p>
+      </section>
+
+      <section class="wrap" aria-labelledby="list-h">
+        <h2 id="list-h" class="vh">All projects</h2>
+        <ol class="ledger">
+          {projects.map((p) => {
+            const href = p.data.url ?? `/projects/${p.id}`;
+            const external = Boolean(p.data.url);
+            const accent = instColor(p.data.institutions[0]);
+            const when = p.data.status === 'current' ? 'Current' : p.data.years;
+            return (
+              <li class="row" id={`p-${p.id}`} style={accent ? `--accent: ${accent}` : undefined}>
+                {p.data.heroImage ? (
                   <img src={p.data.heroImage} alt="" loading="lazy" class="thumb" />
-                </a>
-              )}
-              <div class="card-body">
-                <div class="meta">
-                  <span class="years">{p.data.years}</span>
-                  {p.data.institutions.map((inst) => <span class="inst">{instName(inst)}</span>)}
+                ) : (
+                  <div class="thumb blank" aria-hidden="true"></div>
+                )}
+                <div class="body">
+                  <h3>
+                    <a
+                      href={href}
+                      target={external ? '_blank' : undefined}
+                      rel={external ? 'noopener' : undefined}
+                    >
+                      {p.data.title}{external && ' (opens in a new tab)'}
+                    </a>
+                  </h3>
+                  <p class="dek">{p.data.description}</p>
+                  <dl class="facts">
+                    <div>
+                      <dt>Program</dt>
+                      <dd>{p.data.institutions.map(instName).join(', ')}</dd>
+                    </div>
+                    {when && (
+                      <div>
+                        <dt>{p.data.status === 'current' ? 'Status' : 'Years'}</dt>
+                        <dd>{when}</dd>
+                      </div>
+                    )}
+                    {p.data.partner && (
+                      <div>
+                        <dt>For</dt>
+                        <dd>{p.data.partner}</dd>
+                      </div>
+                    )}
+                    {p.data.team.length > 0 && (
+                      <div>
+                        <dt>By</dt>
+                        <dd>{p.data.team.join(', ')}</dd>
+                      </div>
+                    )}
+                    {p.data.category.length > 0 && (
+                      <div>
+                        <dt>Work</dt>
+                        <dd>{p.data.category.join(', ')}</dd>
+                      </div>
+                    )}
+                  </dl>
                 </div>
-                <h2>
-                  <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>
-                    {p.data.title}{external && ' ↗'}
-                  </a>
-                </h2>
-                <p class="desc">{p.data.description}</p>
-                {p.data.team.length > 0 && (
-                  <p class="by">By {p.data.team.join(', ')}</p>
-                )}
-                {p.data.category.length > 0 && (
-                  <ul class="tags">{p.data.category.map((t) => <li>{t}</li>)}</ul>
-                )}
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-    )}
-  </section>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
+    </>
+  )}
 </Layout>
 
 <style>
   .hero { background: var(--color-navy); color: var(--color-white); }
-  .hero .inner { max-width: var(--max-width); margin: 0 auto; padding: var(--space-16) var(--space-6); }
-  .eyebrow {
-    margin: 0 0 var(--space-3); font-size: var(--text-xs); letter-spacing: 1.5px;
-    text-transform: uppercase; color: var(--color-orange); font-weight: 700;
-  }
-  .hero h1 { margin: 0 0 var(--space-4); color: var(--color-white); font-size: var(--text-4xl); }
-  .lede { margin: 0; font-size: var(--text-lg); color: #cdd6e3; max-width: 60ch; }
+  .hero .inner { max-width: var(--max-width); margin: 0 auto; padding: var(--space-12) var(--space-6); }
+  .hero h1 { margin: 0 0 var(--space-3); color: var(--color-white); font-size: var(--text-4xl); }
+  .lede { margin: 0; font-size: var(--text-lg); color: #cdd6e3; max-width: 52ch; }
 
-  .section { max-width: var(--max-width); margin: 0 auto; padding: var(--space-12) var(--space-6); }
+  .wrap { max-width: var(--max-width); margin: 0 auto; padding: var(--space-12) var(--space-6) 0; }
+  .wrap:last-of-type { padding-bottom: var(--space-16); }
+  .wrap h2 { margin: 0 0 var(--space-2); font-size: var(--text-2xl); color: var(--color-navy); }
+  .note { margin: 0 0 var(--space-4); color: var(--color-muted); max-width: 62ch; }
+
+  .vh {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
   .empty { max-width: 60ch; }
   .empty p { font-size: var(--text-lg); color: #555; margin: 0 0 var(--space-4); }
   .empty .small { font-size: var(--text-base); color: var(--color-muted); }
-  .empty a { color: var(--color-link); font-weight: 700; text-decoration: none; }
+  .empty a { color: var(--color-link); font-weight: 700; }
 
-  .cards {
-    list-style: none; margin: 0; padding: 0; display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6);
+  /* Matrix */
+  .matrix { width: 100%; border-collapse: collapse; }
+  .matrix thead th {
+    text-align: left; font-size: var(--text-base); color: var(--color-navy);
+    padding: 0 var(--space-4) var(--space-3) 0;
+    border-bottom: 3px solid var(--accent, var(--color-steel));
   }
-  .card {
-    background: var(--color-white); border: 1px solid #e3e6ea;
-    border-top: 3px solid var(--color-steel); border-radius: 0 0 8px 8px;
-    overflow: hidden; display: flex; flex-direction: column;
+  .matrix thead th:first-child { border-bottom-color: transparent; }
+  .matrix tbody th {
+    text-align: left; font-weight: 400; font-size: var(--text-sm);
+    padding: var(--space-3) var(--space-4) var(--space-3) 0; width: 36%;
+    color: var(--color-slate);
   }
-  .thumb-link { display: block; }
-  .thumb {
-    width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block;
-    background: var(--color-canvas);
+  .matrix td { padding: var(--space-3) var(--space-4) var(--space-3) 0; vertical-align: middle; }
+  .matrix tbody tr { border-bottom: 1px solid #e3e6ea; }
+  .marks { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .mark {
+    display: block; width: 18px; height: 18px; background: var(--color-navy);
+    border-radius: 2px;
   }
-  .card-body { padding: var(--space-6); }
-  .meta { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; margin-bottom: var(--space-2); }
-  .years { color: var(--color-link); font-weight: 700; font-size: var(--text-sm); }
-  .inst { color: var(--color-muted); font-size: var(--text-xs); }
-  .card h2 { margin: 0 0 var(--space-2); font-size: var(--text-xl); }
-  .card h2 a { text-decoration: none; color: var(--color-navy); }
-  .card h2 a:hover { color: var(--color-link); }
-  .desc { margin: 0 0 var(--space-3); color: #555; font-size: var(--text-sm); line-height: 1.6; }
-  .by { margin: 0; color: var(--color-muted); font-size: var(--text-sm); }
-  .tags { list-style: none; margin: var(--space-3) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2); }
-  .tags li { background: #eef1f4; color: var(--color-navy); border-radius: 12px; padding: 2px var(--space-3); font-size: var(--text-xs); }
+  .mark:hover { background: var(--color-link); }
+  .mark:focus-visible { outline: 3px solid var(--color-orange); outline-offset: 2px; }
+  .none { display: block; width: 18px; border-top: 2px solid #c9ced4; }
 
-  @media (max-width: 720px) { .hero h1 { font-size: var(--text-3xl); } }
+  .partners { margin: var(--space-6) 0 0; display: grid; gap: var(--space-2); }
+  .partners div { display: flex; flex-wrap: wrap; gap: var(--space-2); font-size: var(--text-sm); }
+  .partners dt { font-weight: 700; color: var(--color-navy); }
+  .partners dd { margin: 0; color: #555; }
+
+  /* Ledger */
+  .ledger { list-style: none; margin: var(--space-12) 0 0; padding: 0; }
+  .row {
+    display: grid; grid-template-columns: 9rem 1fr; gap: var(--space-6);
+    padding: var(--space-6) 0;
+    border-top: 1px solid #e3e6ea;
+    scroll-margin-top: var(--space-6);
+  }
+  .row:target { background: #fff6e0; }
+  .thumb { width: 9rem; height: 6.5rem; object-fit: cover; border-radius: 2px; background: #eef1f4; }
+  .thumb.blank { background: #eef1f4; }
+  .body { max-width: 68ch; }
+  .body h3 { margin: 0 0 var(--space-2); font-size: var(--text-xl); line-height: 1.3; }
+  .body h3 a { color: var(--color-navy); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .body h3 a:hover { color: var(--color-link); }
+  .dek { margin: 0 0 var(--space-3); color: #444; line-height: 1.6; }
+  .facts { margin: 0; display: grid; gap: 2px; font-size: var(--text-sm); }
+  .facts div { display: grid; grid-template-columns: 5.5rem 1fr; gap: var(--space-2); }
+  .facts dt { color: var(--color-muted); }
+  .facts dd { margin: 0; color: var(--color-slate); }
+
+
+  /* Behind the examples */
+  .record { margin-top: var(--space-6); max-width: 68ch; }
+  .record h3 { margin: 0 0 var(--space-2); font-size: var(--text-xl); color: var(--color-navy); }
+  .years { border-collapse: collapse; width: 100%; font-size: var(--text-sm); }
+  .years caption { text-align: left; color: #444; padding-bottom: var(--space-2); }
+  .years th, .years td { text-align: left; padding: var(--space-2) var(--space-3) var(--space-2) 0; border-bottom: 1px solid #e3e6ea; }
+  .years thead th { color: var(--color-muted); font-weight: 400; }
+  .years tbody th { font-weight: 700; color: var(--color-navy); width: 4rem; }
+  .years td:nth-child(2) { white-space: nowrap; width: 11rem; }
+  .bar { display: block; height: 10px; width: var(--w); background: var(--color-navy); border-radius: 1px; }
+  .line { margin: var(--space-3) 0 0; color: #444; line-height: 1.6; }
+  .note.small { margin-top: var(--space-6); font-size: var(--text-sm); }
+
+  @media (max-width: 640px) {
+    .row { grid-template-columns: 1fr; gap: var(--space-3); }
+    .thumb { width: 100%; height: 9rem; }
+    .matrix tbody th { width: 44%; }
+  }
 </style>

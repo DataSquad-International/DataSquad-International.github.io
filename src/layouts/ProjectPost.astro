@@ -11,24 +11,75 @@ const { project } = Astro.props;
 const { data } = project;
 
 const institutions = await getCollection('institutions');
-const instNames = data.institutions.map(
-  (id) => institutions.find((i) => i.id === id)?.data.name ?? id
-);
+const insts = data.institutions.map((id) => {
+  const i = institutions.find((x) => x.id === id);
+  return { id, name: i?.data.name ?? id, url: i?.data.url, ror: i?.data.ror_id };
+});
+const instNames = insts.map((i) => i.name);
 
 const site = Astro.site ?? new URL('https://datasquad.info');
 const permalink = new URL(Astro.url.pathname, site).href;
 const imageURL = data.heroImage ?? '/datasquad_international_logo.png';
 
+// "2021–2022" -> "2021/2022" (ISO 8601 interval); "2023–present" -> "2023/..".
+function temporalCoverage(years?: string) {
+  const y = years?.match(/\d{4}/g);
+  if (!y) return undefined;
+  if (years!.includes('present')) return `${y[0]}/..`;
+  return y.length > 1 ? `${y[0]}/${y[y.length - 1]}` : y[0];
+}
+
+const organization = (i: (typeof insts)[number]) => ({
+  '@type': 'CollegeOrUniversity',
+  name: i.name,
+  ...(i.url && { url: i.url }),
+  ...(i.ror && { sameAs: `https://ror.org/${i.ror}` }),
+});
+
 const schema = {
   '@type': 'CreativeWork',
+  '@id': `${permalink}#project`,
   name: data.title,
   description: data.description,
-  ...(data.team.length && { creator: data.team.map((name) => ({ '@type': 'Person', name })) }),
-  ...(data.tools.length && { keywords: data.tools.join(', ') }),
+  inLanguage: 'en',
+  license: 'https://creativecommons.org/licenses/by/4.0/',
+  ...(data.team.length && {
+    creator: data.team.map((name) => ({
+      '@type': 'Person',
+      name,
+      affiliation: insts.map(organization),
+    })),
+  }),
+  ...(temporalCoverage(data.years) && { temporalCoverage: temporalCoverage(data.years) }),
+  keywords: [...data.category, ...data.tools].join(', ') || undefined,
+  ...(data.category.length && { genre: data.category }),
+  ...(data.partnerType && {
+    audience: {
+      '@type': 'Audience',
+      audienceType: data.partnerType.replace('-', ' '),
+      ...(data.partner && { name: data.partner }),
+    },
+  }),
+  sourceOrganization: insts.map(organization),
+  isPartOf: {
+    '@type': 'CollectionPage',
+    name: 'DataSquad examples',
+    url: new URL('/projects', site).href,
+  },
+  ...(data.sourceUrl && { isBasedOn: data.sourceUrl }),
   publisher: { '@type': 'Organization', name: 'DataSquad International', url: site.href },
   mainEntityOfPage: { '@type': 'WebPage', '@id': permalink },
   url: permalink,
   image: new URL(imageURL, site).href,
+};
+
+const breadcrumbs = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: site.href },
+    { '@type': 'ListItem', position: 2, name: 'Examples', item: new URL('/projects', site).href },
+    { '@type': 'ListItem', position: 3, name: data.title, item: permalink },
+  ],
 };
 ---
 
@@ -39,6 +90,7 @@ const schema = {
   image={imageURL}
 >
   <StructuredData slot="head" schema={schema} />
+  <StructuredData slot="head" schema={breadcrumbs} />
 
   <article class="post">
     <p class="back"><a href="/projects">← All examples</a></p>
@@ -52,7 +104,7 @@ const schema = {
       <p class="meta">
         <span>{instNames.join(', ')}</span>
         <span aria-hidden="true">·</span>
-        <span>{data.years}</span>
+        {data.status === 'current' ? <span>Current</span> : data.years && <span>{data.years}</span>}
       </p>
     </header>
 
@@ -77,10 +129,24 @@ const schema = {
     )}
 
     <dl class="fact-sheet">
-      <div>
-        <dt>Years</dt>
-        <dd>{data.years}</dd>
-      </div>
+      {data.years && (
+        <div>
+          <dt>Years</dt>
+          <dd>{data.years}</dd>
+        </div>
+      )}
+      {data.partner && (
+        <div>
+          <dt>Partner</dt>
+          <dd>{data.partner}</dd>
+        </div>
+      )}
+      {data.client && (
+        <div>
+          <dt>Client</dt>
+          <dd>{data.client}</dd>
+        </div>
+      )}
       {data.team.length > 0 && (
         <div>
           <dt>Team</dt>

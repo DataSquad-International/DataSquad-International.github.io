@@ -5,7 +5,9 @@ institutions: ["ucla"]
 team: ["Julia Wood", "Ethan Allavarpu", "Tristan Dewing", "Lawrence Lee"]
 years: "2021–2025"
 tools: ["R", "Python", "OpenRefine", "Tableau"]
-category: ["Data Integration", "Social Justice Research"]
+category: ["Data cleaning & integration", "Visualization & reporting"]
+partnerType: "research"
+partner: "Biocritical Studies Lab"
 heroImage: "/img/projects/keel-coroners-silence-cover.jpg"
 heroImageAlt: "Cover of The Coroner's Silence by Terence Keel"
 quote:

@@ -4,7 +4,9 @@ description: "Standard NLP tools assume modern, pre-segmented text. A Ming-dynas
 institutions: ["ucla"]
 years: "2021"
 tools: ["Python", "spaCy", "scikit-learn"]
-category: ["Data Science Center", "Digital Humanities"]
+category: ["Analysis & modeling"]
+partnerType: "research"
+partner: "Asian Languages and Cultures"
 heroImage: "/img/projects/buddhist-text-hero.jpg"
 heroImageAlt: "Pages of ancient Chinese Buddhist text"
 sourceUrl: "https://ucla-datasquad.github.io/portfolio/10-buddhist-text/"

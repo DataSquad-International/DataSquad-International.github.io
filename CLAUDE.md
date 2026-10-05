@@ -58,7 +58,8 @@ The `/blog` is a **shared, aggregating** blog:
 Generated automatically every build:
 
 - Feeds: `/rss.xml`, `/atom.xml`, `/feed.json`
-- JSON API: `/api/posts.json`, `/api/institutions.json` (CORS-open)
+- JSON API: `/api/posts.json`, `/api/institutions.json`, `/api/projects.json` (CORS-open;
+  projects includes the shared category / partner-type vocabulary from `src/lib/project-vocab.ts`)
 - `/sitemap-index.xml` (via `@astrojs/sitemap`), `public/robots.txt`
 - Per-post: Open Graph + Twitter meta + `BlogPosting` JSON-LD (LinkedIn cards)
 
