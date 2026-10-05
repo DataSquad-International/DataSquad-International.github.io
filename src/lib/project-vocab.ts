@@ -25,3 +25,14 @@ export const PARTNER_TYPE_PHRASE: Record<(typeof PARTNER_TYPES)[number], string>
   'campus-operations': 'for campus offices',
   internal: 'for the program itself',
 };
+
+// How an entry came to be listed. A program that curates its showcase marks
+// those `featured`; entries drawn from a program's complete project record,
+// with little more than the facts, are `logged`. Mixing the two is fine, but
+// readers can't compare programs without knowing which is which.
+export const SELECTIONS = ['featured', 'logged'] as const;
+
+export const SELECTION_PHRASE: Record<(typeof SELECTIONS)[number], string> = {
+  featured: 'A written-up example chosen to show the program\'s work',
+  logged: 'An entry from the program\'s complete project record',
+};
