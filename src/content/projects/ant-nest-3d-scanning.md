@@ -10,7 +10,7 @@ partnerType: "research"
 partner: "Ecology and Evolutionary Biology"
 heroImage: "/img/projects/ant-nest-hero.png"
 heroImageAlt: "3D representation of an ant nest, with broken segments shown in different colors"
-sourceUrl: "https://ucla-datasquad.github.io/portfolio/08-ant-nests/"
+sourceUrl: "https://ucla-datasquad.github.io/#portfolio"
 ---
 
 Eva Horna Lowell and Sean O'Fallon, graduate students in the Department of Ecology and Evolutionary Biology, study ant nest behavior in the Pinter-Wollman Lab at UCLA. Their original plan was to compare nests exposed to different environmental conditions using wax casts of the tunnels. But the casts were too intricate and delicate: they kept breaking, forcing a different approach.

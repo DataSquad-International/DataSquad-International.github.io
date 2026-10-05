@@ -13,7 +13,7 @@ heroImageAlt: "Vietnamese refugee boat on the ocean"
 quote:
   text: "The DSC's 3D resources allow researchers and faculty to document and preserve important cultural heritage, and make it available to everyone."
   attribution: "Refugee Material Cultural Initiative"
-sourceUrl: "https://ucla-datasquad.github.io/portfolio/02-refugee-artifacts/"
+sourceUrl: "https://ucla-datasquad.github.io/#portfolio"
 ---
 
 Working with Professor Kelly Nguyen and the Refugee Material Cultural Initiative, the Data Science Center helped digitize and preserve physical artifacts from Vietnamese refugees, making cultural memory publicly accessible for the first time.

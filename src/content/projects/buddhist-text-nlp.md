@@ -9,7 +9,7 @@ partnerType: "research"
 partner: "Asian Languages and Cultures"
 heroImage: "/img/projects/buddhist-text-hero.jpg"
 heroImageAlt: "Pages of ancient Chinese Buddhist text"
-sourceUrl: "https://ucla-datasquad.github.io/portfolio/10-buddhist-text/"
+sourceUrl: "https://ucla-datasquad.github.io/#portfolio"
 ---
 
 A graduate student from Asian Languages and Cultures came to the Data Science Center to semantically analyze a set of ancient Buddhist texts: extracting meaning and comparing similarity across documents quantitatively. The consultation doubled as an exercise in applying Python's standard NLP toolbox (spaCy, scikit-learn, and word-cloud visualization) to a language the tools weren't built for.
