@@ -5,7 +5,9 @@ institutions: ["ucla"]
 team: ["Will Foote"]
 years: "2022"
 tools: ["Tableau", "R"]
-category: ["UCLA DataSquad", "DataSquad International"]
+category: ["Visualization & reporting"]
+partnerType: "internal"
+partner: "DataSquad International"
 heroImage: "/img/projects/dsi-tableau-obstacles.png"
 heroImageAlt: "Dashboard visualizing the relationship between obstacle rank, Data Support Services status, and location"
 sourceUrl: "https://ucla-datasquad.github.io/portfolio/06-datasquad-international/"

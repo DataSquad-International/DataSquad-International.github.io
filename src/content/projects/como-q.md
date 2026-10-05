@@ -5,7 +5,8 @@ institutions: ["ucla"]
 team: ["Will Foote", "Isabel Light"]
 years: "2022"
 tools: ["R"]
-category: ["UCLA DataSquad"]
+category: ["Tools & automation"]
+partnerType: "internal"
 heroImage: "/img/projects/como-q-hero.png"
 heroImageAlt: "Skincare products"
 sourceUrl: "https://ucla-datasquad.github.io/portfolio/05-como-q/"

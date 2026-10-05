@@ -5,7 +5,9 @@ institutions: ["ucla"]
 team: ["Lawrence Lee", "Madeline Kim"]
 years: "2023–2024"
 tools: ["R"]
-category: ["Data Engineering", "Research Support"]
+category: ["Data cleaning & integration"]
+partnerType: "research"
+partner: "Carceral Ecologies Lab"
 heroImage: "/img/projects/carceral-ecologies-hero.jpg"
 heroImageAlt: "LAPD helicopter in flight over Los Angeles"
 quote:

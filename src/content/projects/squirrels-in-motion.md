@@ -4,7 +4,9 @@ description: "Motion-sensor collars on wild ground squirrels produced accelerome
 institutions: ["ucla"]
 years: "2021"
 tools: ["R"]
-category: ["Data Science Center", "Machine Learning"]
+category: ["Analysis & modeling"]
+partnerType: "research"
+partner: "Ecology and Evolutionary Biology"
 heroImage: "/img/projects/squirrels-hero.jpg"
 heroImageAlt: "A California ground squirrel wearing a motion-sensor collar"
 sourceUrl: "https://ucla-datasquad.github.io/portfolio/09-squirrels/"

@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { PROJECT_CATEGORIES, PARTNER_TYPES } from './lib/project-vocab';
 
 const institutions = defineCollection({
   loader: glob({ pattern: '**/*.yaml', base: './src/content/institutions' }),
@@ -56,10 +57,18 @@ const projects = defineCollection({
     // institution ids (matches institutions/*.yaml filenames)
     institutions: z.array(z.string()),
     team: z.array(z.string()).default([]),
-    // free text, not a range type: "2021–2025", "2023", "2023–present"
-    years: z.string(),
+    // free text, not a range type: "2021–2025", "2023", "2023–present".
+    // Optional: some institutions' records don't carry dates.
+    years: z.string().optional(),
+    // current work vs finished work (Carleton's split); defaults to finished
+    status: z.enum(['current', 'past']).default('past'),
+    // the office, department or unit the work was done for
+    partner: z.string().optional(),
+    partnerType: z.enum(PARTNER_TYPES).optional(),
+    // the person who requested the work, when the institution records one
+    client: z.string().optional(),
     tools: z.array(z.string()).default([]),
-    category: z.array(z.string()).default([]),
+    category: z.array(z.enum(PROJECT_CATEGORIES)).default([]),
     heroImage: z.string().optional(),
     heroImageAlt: z.string().optional(),
     quote: z

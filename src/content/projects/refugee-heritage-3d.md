@@ -5,7 +5,9 @@ institutions: ["ucla"]
 team: ["Doug Daniels", "Bianca Badajos", "Connor Lim"]
 years: "2023–2024"
 tools: ["3D Scanning"]
-category: ["Digital Humanities", "3D Digitization", "Cultural Heritage"]
+category: ["Digitization & heritage"]
+partnerType: "research"
+partner: "Refugee Material Cultural Initiative"
 heroImage: "/img/projects/refugee-heritage-hero.jpg"
 heroImageAlt: "Vietnamese refugee boat on the ocean"
 quote:

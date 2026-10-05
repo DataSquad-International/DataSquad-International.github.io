@@ -4,7 +4,8 @@ description: "A fragmented 10TB national voter file became a single analysis-rea
 institutions: ["ucla"]
 years: "2023–present"
 tools: ["Redivis", "Python"]
-category: ["Research Infrastructure", "Data Engineering"]
+category: ["Data management & infrastructure"]
+partnerType: "research"
 heroImage: "/img/projects/voter-file-hero.jpg"
 heroImageAlt: "Hand touching a voting machine screen showing presidential candidates"
 sourceUrl: "https://ucla-datasquad.github.io/portfolio/04-voter-file/"
