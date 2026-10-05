@@ -1,0 +1,65 @@
+{
+  "note": "Aggregate counts of each program's fuller consultation records. Tallied from file titles and dates, so approximate. No titles or names are published; consultations are confidential.",
+  "programs": [
+    {
+      "institution": "ucla",
+      "notes": {
+        "label": "consultation notes in the Data Science Center's shared drive",
+        "total": 140,
+        "byYear": [
+          {
+            "year": "2022",
+            "count": 15
+          },
+          {
+            "year": "2023",
+            "count": 40
+          },
+          {
+            "year": "2024",
+            "count": 55
+          },
+          {
+            "year": "2025",
+            "count": 30,
+            "partial": "January to July"
+          }
+        ]
+      },
+      "board": {
+        "label": "Projects and requests logged on the GitHub board since March 2025",
+        "total": 25,
+        "status": [
+          {
+            "label": "done",
+            "count": 18
+          },
+          {
+            "label": "in progress",
+            "count": 2
+          },
+          {
+            "label": "new",
+            "count": 2
+          },
+          {
+            "label": "on hold",
+            "count": 2
+          },
+          {
+            "label": "future idea",
+            "count": 1
+          }
+        ]
+      },
+      "topics": [
+        "text recognition and extraction from scans",
+        "scraping social media and websites",
+        "census and survey data",
+        "statistics and R help",
+        "mapping",
+        "dashboards"
+      ]
+    }
+  ]
+}

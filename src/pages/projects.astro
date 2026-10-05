@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import StructuredData from '../components/StructuredData.astro';
 import { getCollection } from 'astro:content';
+import consultations from '../data/consultations.json';
 import { PROJECT_CATEGORIES, PARTNER_TYPES, PARTNER_TYPE_PHRASE } from '../lib/project-vocab';
 
 function sortYear(years?: string): number {
@@ -47,6 +48,12 @@ const partnerSummary = institutions.map((inst) => {
     .map((x) => `${x.n} ${x.phrase}`);
   return { name: inst.data.name, total: mine.length, parts };
 });
+
+const records = consultations.programs.map((p) => ({
+  name: instName(p.institution),
+  ...p,
+  max: Math.max(...p.notes.byYear.map((y) => y.count)),
+}));
 
 const site = Astro.site ?? new URL('https://datasquad.info');
 const itemList = {
@@ -155,6 +162,50 @@ const itemList = {
             </div>
           ))}
         </dl>
+      </section>
+
+      <section class="wrap" aria-labelledby="behind-h">
+        <h2 id="behind-h">How much work is behind these examples</h2>
+        <p class="note">
+          The examples are a selection. Each program keeps a fuller record of its
+          consultations, and this is what UCLA's shows.
+        </p>
+        {records.map((r) => (
+          <div class="record">
+            <h3>{r.name}</h3>
+            <table class="years">
+              <caption>
+                About {r.notes.total} {r.notes.label}, by year
+              </caption>
+              <thead>
+                <tr><th scope="col">Year</th><th scope="col">Notes</th><th scope="col"><span class="vh">Relative size</span></th></tr>
+              </thead>
+              <tbody>
+                {r.notes.byYear.map((y) => (
+                  <tr>
+                    <th scope="row">{y.year}</th>
+                    <td>about {y.count}{y.partial && ` (${y.partial})`}</td>
+                    <td aria-hidden="true"><span class="bar" style={`--w: ${(y.count / r.max) * 100}%`}></span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p class="line">
+              {r.board.label}: {r.board.total}, of which
+              {' '}{r.board.status.map((s) => `${s.count} ${s.label}`).join(', ')}.
+              Some 2025 projects appear in both records, so the two counts overlap
+              and shouldn't be added together.
+            </p>
+            <p class="line">
+              Requests that recur: {r.topics.join(', ')}.
+            </p>
+          </div>
+        ))}
+        <p class="note small">
+          We don't have Carleton's equivalent counts on the site yet. Counts are
+          approximate, tallied from file titles and dates. Individual consultations
+          are confidential, so none are listed.
+        </p>
       </section>
 
       <section class="wrap" aria-labelledby="list-h">
@@ -293,6 +344,20 @@ const itemList = {
   .facts div { display: grid; grid-template-columns: 5.5rem 1fr; gap: var(--space-2); }
   .facts dt { color: var(--color-muted); }
   .facts dd { margin: 0; color: var(--color-slate); }
+
+
+  /* Behind the examples */
+  .record { margin-top: var(--space-6); max-width: 68ch; }
+  .record h3 { margin: 0 0 var(--space-2); font-size: var(--text-xl); color: var(--color-navy); }
+  .years { border-collapse: collapse; width: 100%; font-size: var(--text-sm); }
+  .years caption { text-align: left; color: #444; padding-bottom: var(--space-2); }
+  .years th, .years td { text-align: left; padding: var(--space-2) var(--space-3) var(--space-2) 0; border-bottom: 1px solid #e3e6ea; }
+  .years thead th { color: var(--color-muted); font-weight: 400; }
+  .years tbody th { font-weight: 700; color: var(--color-navy); width: 4rem; }
+  .years td:nth-child(2) { white-space: nowrap; width: 11rem; }
+  .bar { display: block; height: 10px; width: var(--w); background: var(--color-navy); border-radius: 1px; }
+  .line { margin: var(--space-3) 0 0; color: #444; line-height: 1.6; }
+  .note.small { margin-top: var(--space-6); font-size: var(--text-sm); }
 
   @media (max-width: 640px) {
     .row { grid-template-columns: 1fr; gap: var(--space-3); }
