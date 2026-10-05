@@ -14,7 +14,7 @@ sourceUrl: "https://carletondatasquad.bitbucket.io/#projects"
 ---
 
 We interact with many forms of data visualization in our daily lives,
-often without even realizing it. From weather maps to public transportation guides—data visualization
+often without even realizing it. From weather maps to public transportation guides, data visualization
 plays a critical role in clearly explaining ideas to people of different backgrounds. Visualizing data
 in an effective and inclusive manner is the premise of the project undertaken by my teammate, Karla Cruz Sanchez '26,
 and myself wherein we constructed graphs for Dr. Annette Nierobisz's (from Carleton's Sociology Department!) research
