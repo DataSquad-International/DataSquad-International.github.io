@@ -27,6 +27,8 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
 
 // Matrix: one row per shared category, one column per institution. A project
 // with two categories shows up in both rows.
+const anyLogged = projects.some((p) => p.data.selection === 'logged');
+
 const rows = PROJECT_CATEGORIES.map((category) => ({
   category,
   cells: institutions.map((inst) =>
@@ -108,6 +110,7 @@ const itemList = {
         <p class="note">
           One square is one project. Select a square to jump to it. Projects
           with two kinds of work appear in both rows.
+          {anyLogged && ' A filled square is a written-up example; an open square is an entry from the program\u2019s complete record.'}
         </p>
         <p class="note">
           Carleton started the DataSquad model, and Paula Lackie's program has
@@ -138,7 +141,7 @@ const itemList = {
                       <ul class="marks">
                         {cell.map((p) => (
                           <li>
-                            <a class="mark" href={`#p-${p.id}`} title={p.data.title}>
+                            <a class:list={['mark', { logged: p.data.selection === 'logged' }]} href={`#p-${p.id}`} title={p.data.title}>
                               <span class="vh">{p.data.title}</span>
                             </a>
                           </li>
@@ -257,6 +260,12 @@ const itemList = {
                         <dd>{p.data.team.join(', ')}</dd>
                       </div>
                     )}
+                    {p.data.selection === 'logged' && (
+                      <div>
+                        <dt>Listing</dt>
+                        <dd>From the program's complete record</dd>
+                      </div>
+                    )}
                     {p.data.category.length > 0 && (
                       <div>
                         <dt>Work</dt>
@@ -315,7 +324,9 @@ const itemList = {
     display: block; width: 18px; height: 18px; background: var(--color-navy);
     border-radius: 2px;
   }
+  .mark.logged { background: transparent; box-shadow: inset 0 0 0 2px var(--color-navy); }
   .mark:hover { background: var(--color-link); }
+  .mark.logged:hover { background: var(--color-link); box-shadow: none; }
   .mark:focus-visible { outline: 3px solid var(--color-orange); outline-offset: 2px; }
   .none { display: block; width: 18px; border-top: 2px solid #c9ced4; }
 

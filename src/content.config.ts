@@ -1,6 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { PROJECT_CATEGORIES, PARTNER_TYPES } from './lib/project-vocab';
+import { PROJECT_CATEGORIES, PARTNER_TYPES, SELECTIONS } from './lib/project-vocab';
 
 const institutions = defineCollection({
   loader: glob({ pattern: '**/*.yaml', base: './src/content/institutions' }),
@@ -60,6 +60,8 @@ const projects = defineCollection({
     // free text, not a range type: "2021–2025", "2023", "2023–present".
     // Optional: some institutions' records don't carry dates.
     years: z.string().optional(),
+    // how the entry came to be listed; see src/lib/project-vocab.ts
+    selection: z.enum(SELECTIONS).default('featured'),
     // current work vs finished work (Carleton's split); defaults to finished
     status: z.enum(['current', 'past']).default('past'),
     // the office, department or unit the work was done for

@@ -25,6 +25,11 @@ Collections use the `glob()` loader. YAML files live in:
   `blog_feed_url`, and `brand_color` / `brand_color_alt` (the school's own colors,
   used only as a thin local accent — see "Institutional accent system" below)
 - `src/content/projects/` — cross-institution project outputs
+  Shared vocabulary lives in `src/lib/project-vocab.ts`: work `category` (10 values),
+  `partnerType` (who it was for), and `selection` (`featured` = a written-up example
+  chosen to show the program's work; `logged` = an entry from the program's complete
+  record). Keep programs comparable: say which tier an entry is. Counts of each
+  program's fuller records are in `src/data/consultations.json` (aggregates only).
 - `src/content/people/` — leads and contributors; fields include `orcid`
 
 ## Site architecture

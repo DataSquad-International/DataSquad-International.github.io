@@ -135,6 +135,12 @@ const breadcrumbs = {
           <dd>{data.years}</dd>
         </div>
       )}
+      {data.selection === 'logged' && (
+        <div>
+          <dt>Listing</dt>
+          <dd>From the program's complete project record</dd>
+        </div>
+      )}
       {data.partner && (
         <div>
           <dt>Partner</dt>

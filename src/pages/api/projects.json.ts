@@ -1,6 +1,12 @@
 import type { APIContext } from 'astro';
 import { getCollection } from 'astro:content';
-import { PROJECT_CATEGORIES, PARTNER_TYPES, PARTNER_TYPE_PHRASE } from '../../lib/project-vocab';
+import {
+  PROJECT_CATEGORIES,
+  PARTNER_TYPES,
+  PARTNER_TYPE_PHRASE,
+  SELECTIONS,
+  SELECTION_PHRASE,
+} from '../../lib/project-vocab';
 
 export async function GET(context: APIContext) {
   const site = (context.site ?? new URL('https://datasquad.info')).href.replace(/\/$/, '');
@@ -15,6 +21,7 @@ export async function GET(context: APIContext) {
     vocabulary: {
       categories: PROJECT_CATEGORIES,
       partner_types: PARTNER_TYPES.map((id) => ({ id, phrase: PARTNER_TYPE_PHRASE[id] })),
+      selections: SELECTIONS.map((id) => ({ id, phrase: SELECTION_PHRASE[id] })),
     },
     projects: projects.map((p) => ({
       id: p.id,
@@ -22,6 +29,7 @@ export async function GET(context: APIContext) {
       description: p.data.description,
       institutions: p.data.institutions,
       status: p.data.status,
+      selection: p.data.selection,
       years: p.data.years ?? null,
       partner: p.data.partner ?? null,
       partner_type: p.data.partnerType ?? null,
