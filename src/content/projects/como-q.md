@@ -9,7 +9,7 @@ category: ["Tools & automation"]
 partnerType: "internal"
 heroImage: "/img/projects/como-q-hero.png"
 heroImageAlt: "Skincare products"
-sourceUrl: "https://ucla-datasquad.github.io/portfolio/05-como-q/"
+sourceUrl: "https://ucla-datasquad.github.io/#p16"
 ---
 
 When Isabel Light filled out a request form for the UCLA DataSquad to help her code a passion project, she didn't know she'd be the first external applicant the team had ever helped. Isabel, a senior Microbiology, Immunology, and Molecular Genetics major at UCLA, had no prior connection to the Data Science Center; until then, every DataSquad consultation had come through referrals from within the DSC.

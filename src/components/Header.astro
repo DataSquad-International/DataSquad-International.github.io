@@ -15,13 +15,14 @@ const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
 <header class="site-header">
   <div class="header-inner">
     <a class="brand" href="/">
-      <img src="/datasquad_international_logo.png" alt="" width="32" height="32" />
+      <img src="/datasquad_international_logo.png" alt="" width="32" height="35" />
       <span class="brand-name">DataSquad International</span>
     </a>
 
-    <input type="checkbox" id="nav-toggle" class="nav-toggle" hidden />
-    <label for="nav-toggle" class="nav-burger" aria-label="Toggle navigation">
-      <span></span><span></span><span></span>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+    <label for="nav-toggle" class="nav-burger">
+      <span class="vh">Menu</span>
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
     </label>
 
     <nav class="site-nav" aria-label="Primary">
@@ -103,7 +104,25 @@ const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
     cursor: pointer;
     padding: var(--space-2);
   }
-  .nav-burger span {
+  /* The checkbox stays in the tab order (not display:none) so keyboard users
+     can open the menu; it is only visually hidden. */
+  .nav-toggle,
+  .vh {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .nav-toggle:focus-visible + .nav-burger {
+    outline: 3px solid var(--color-orange);
+    outline-offset: 2px;
+  }
+  .nav-burger .bar {
     width: 22px;
     height: 2px;
     background: var(--color-white);

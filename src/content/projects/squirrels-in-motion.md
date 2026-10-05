@@ -9,7 +9,7 @@ partnerType: "research"
 partner: "Ecology and Evolutionary Biology"
 heroImage: "/img/projects/squirrels-hero.jpg"
 heroImageAlt: "A California ground squirrel wearing a motion-sensor collar"
-sourceUrl: "https://ucla-datasquad.github.io/portfolio/09-squirrels/"
+sourceUrl: "https://ucla-datasquad.github.io/#p20"
 ---
 
 Amanda Robin, a PhD candidate in the Department of Ecology and Evolutionary Biology, studies the behavior and locomotion of wild squirrels. In 2019, she and the Squirrel Gazer team equipped wild California ground squirrels (*Otospermophilus beecheyi*) with motion-sensitive collars, recording accelerometer data at 100 values per second as the squirrels moved through their environment.
