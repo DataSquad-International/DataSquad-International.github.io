@@ -1,8 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
-const ISSUE_CHOOSER =
-  'https://github.com/DataSquad-International/DataSquad-International.github.io/issues/new/choose';
+const JOIN_FORM =
+  'https://github.com/DataSquad-International/DataSquad-International.github.io/issues/new?template=institutional-interest.yml';
 const GH_ORG = 'https://github.com/DataSquad-International';
 // TODO: replace with the real network inbox before launch.
 const EMAIL = 'hello@datasquad.info';
@@ -10,16 +10,16 @@ const EMAIL = 'hello@datasquad.info';
 const routes = [
   {
     who: 'Institutions',
-    body: 'Interested in starting a DataSquad? Open an interest issue and a network lead will follow up.',
-    cta: 'Express interest →',
-    href: ISSUE_CHOOSER,
+    body: 'Interested in starting a DataSquad? Introduce yourself on GitHub and a network lead will follow up.',
+    cta: 'Introduce yourself →',
+    href: JOIN_FORM,
     external: true,
   },
   {
     who: 'Students',
-    body: 'Want to get involved? If your campus has a DataSquad, contact your local program. Otherwise, use the get-involved form.',
-    cta: 'Get involved →',
-    href: ISSUE_CHOOSER,
+    body: 'Want to get involved? If your campus has a DataSquad, contact your local program. Otherwise, introduce yourself to the network.',
+    cta: 'Introduce yourself →',
+    href: JOIN_FORM,
     external: true,
   },
   {

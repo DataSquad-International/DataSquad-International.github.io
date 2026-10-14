@@ -1,10 +1,7 @@
-# Force people through a template; route the wrong audiences elsewhere.
+# Force people through the join form; route researchers and students to a local program.
 blank_issues_enabled: false
 contact_links:
   - name: Find a DataSquad near you (researchers & students)
     url: https://datasquad.info/institutions
     about: If your institution already has a DataSquad, contact your local program directly for data-services help.
-  - name: Email us privately
-    # TODO: set a real network inbox before launch (placeholder below).
-    url: mailto:hello@datasquad.info
-    about: Prefer not to post publicly, or don't have a GitHub account? Email the network leads.
+# No email fallback: hello@datasquad.info has no MX record yet (see issue #11). Add one here once a working inbox exists.
